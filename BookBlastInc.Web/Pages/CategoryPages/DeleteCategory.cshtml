@@ -1,0 +1,21 @@
+@page
+@model BookBlastInc.Web.Pages.CategoryPages.DeleteCategory
+
+<form method="post">
+    <input asp-for="Category.Id" hidden/>
+    <div class="border p-3  mt-4">
+        <div class="row pb-2">
+            <h2 class="text-primary">Delete Immunization</h2>
+            <hr/>
+        </div>
+
+        <div class="mb-3">
+            <label class="col-form-label" asp-for="Category.Name"></label><br/>
+            <input type="text" asp-for="Category.Name" disabled class="form-control"/><br/>
+         
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="width: 100px">Delete</button>
+        <a asp-page="CategoryPages/Categories">Back to listing</a>
+    </div>
+</form>

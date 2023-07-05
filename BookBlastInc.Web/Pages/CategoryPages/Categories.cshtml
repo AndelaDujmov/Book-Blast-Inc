@@ -1,0 +1,52 @@
+@page
+@model BookBlastInc.Web.Pages.CategoryPages.Categories
+
+<div class="container p-3">
+    <div class="row pt-4">
+        <div class="col-6">
+            <h2 class="text-secondary">Categories</h2>
+        </div>
+        <div class="col-6 text-end">
+            <a asp-page="/CategoryPages/AddNewCategory" class="btn btn-secondary">
+                <i class="bi bi-plus-circle-dotted"></i> &nbsp; Add new category
+            </a>
+        </div>
+        
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <table class="table table table-bordered border-1.4 border-dark">
+            <thead class="thead-dark text-secondary" style="background-color: wheat; text-overline-color: white; color: white">
+            <tr class="text-primary">
+                <th>
+                    Name
+                </th>
+
+                <th>
+                          
+                </th>
+                     
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var mc in Model.CategoryList)
+            {
+                <tr>
+                    <td>@mc.Name</td>
+                    <td>
+                        <div class="w-75 btn-group" role="group">
+                            <a asp-controller="Immunization" asp-action="Edit" asp-route-id="@mc.Id" class="btn btn-primary mx-2">
+                                Edit
+                            </a> &nbsp;
+                            <a asp-page="/CategoryPages/DeleteCategory" asp-route-id="@mc.Id" class="btn btn-secondary mx-4">
+                                Delete
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+</div>

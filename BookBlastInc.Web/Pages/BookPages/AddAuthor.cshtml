@@ -1,0 +1,26 @@
+@page
+@model BookBlastInc.Web.Pages.BookPages.AddAuthor
+
+<div class="card-body p-3">
+<form method="post" class="row">
+    <div class="border p-3  mt-4">
+        <div class="row pb-2">
+            <h2 class="text-dark py-3 ">Add New Author</h2>
+            <hr/>
+        </div>
+        <div asp-validation-summary="All"></div>
+        <div class="form-floating py-2">
+            <label class="col-form-label" asp-for="BookAuthor.FirstName"></label><br/>
+            <input type="text" asp-for="BookAuthor.FirstName" class="form-control"/><br/>
+        </div>
+        <div class="form-floating">
+            <label class="col-form-label" asp-for="BookAuthor.LastName"></label><br/>
+            <input type="text" asp-for="BookAuthor.LastName" class="form-control"/><br/>
+        </div>
+    </div>
+            
+    <button type="submit" class="btn btn-secondary" style="width: 100px">Submit</button><br/>
+    <a asp-page="CategoryPages/Index">Back to listing</a>
+      
+</form>
+</div>

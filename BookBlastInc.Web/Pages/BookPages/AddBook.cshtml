@@ -1,0 +1,44 @@
+@page
+@model BookBlastInc.Web.Pages.BookPages.AddBook
+
+<div class="card-body p-3">
+    <form method="post" class="row">
+        <div class="border p-3  mt-4">
+            <div class="row pb-2">
+                <h2 class="text-dark py-3 ">Add New Book</h2>
+                <hr/>
+            </div>
+            <div class="form-floating py-2">
+                <label class="col-form-label" asp-for="@Model.BookAuthor.Book.Name"></label><br/>
+                <input type="text" asp-for="@Model.BookAuthor.Book.Name" class="form-control"/><br/>
+            </div>
+            <div class="form-floating py-4">
+                <label class="col-form-label" asp-for="@Model.CategoryId">Category</label>
+                <select class="form-select" asp-items="@Model.BookAuthor.Categories" asp-for="@Model.CategoryId">
+                    <option id="select" disabled selected value="">Select category</option>
+                </select>
+            </div>
+            <div class="form-floating">
+                <label class="col-form-label" asp-for="@Model.BookAuthor.Book.About"></label><br/>
+                <input type="text" asp-for="@Model.BookAuthor.Book.About" class="form-control"/><br/>
+            </div>
+             <div class="form-floating py-4">
+                <label class="col-form-label" asp-for="@Model.Author">Author</label>
+                <select class="form-select" asp-items="@Model.BookAuthor.SelectListItems" asp-for="@Model.Author">
+                    <option id="select" disabled selected value="">Select author</option>
+                </select>
+            </div>
+            <div class="form-floating">
+                <label class="col-form-label" asp-for="@Model.BookAuthor.Book.Price"></label><br/>
+                <input type="decimal" asp-for="@Model.BookAuthor.Book.Price" class="form-control">Eur</input><br/>
+            </div>
+            <div class="form-floating">
+                <label class="col-form-label" asp-for="@Model.BookAuthor.Book.ReleaseDate"></label><br/>
+                <input type="date" asp-for="@Model.BookAuthor.Book.ReleaseDate" class="form-control"/><br/>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-secondary" style="width: 100px">Submit</button><br/>
+        <a asp-page="CategoryPages/Index">Back to listing</a>
+      
+    </form>
+</div>

@@ -1,0 +1,28 @@
+@page
+@model BookBlastInc.Web.Pages.CategoryPages.AddNewCategory
+
+<div class="card-body p-3">
+    <form method="post" class="row">
+        <div class="border p-3  mt-4">
+            <div class="row pb-2">
+                <h2 class="text-primary py-3 ">Add New Category</h2>
+                <hr/>
+            </div>
+            <div asp-validation-summary="All"></div>
+            <div class="form-floating py-2">
+                <label class="col-form-label" asp-for="Category.Name"></label><br/>
+                <input type="text" asp-for="Category.Name" class="form-control"/><br/>
+                <span asp-validation-for="Category.Name" class="text-danger"></span><br/>
+            </div>
+            <div class="form-floating">
+                <label class="col-form-label" asp-for="Category.DisplayNumber"></label><br/>
+                <input type="number" asp-for="Category.DisplayNumber" class="form-control"/><br/>
+                <span asp-validation-for="Category.DisplayNumber" class="text-danger"></span><br/>
+            </div>
+        </div>
+            
+        <button type="submit" class="btn btn-primary" style="width: 100px">Submit</button>
+        <a asp-page="CategoryPages/Index">Back to listing</a>
+      
+    </form>
+</div>
