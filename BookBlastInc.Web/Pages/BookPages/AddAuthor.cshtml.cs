@@ -8,7 +8,7 @@ namespace BookBlastInc.Web.Pages.BookPages;
 [BindProperties]
 public class AddAuthor : PageModel
 {
-    private readonly BookService _service;
+    private readonly BookService _service; 
     public Author BookAuthor { get; set; }
 
     public AddAuthor(BookService service)
@@ -16,14 +16,19 @@ public class AddAuthor : PageModel
         _service = service;
     }
 
-    public void OnGet()
+    public IActionResult OnGet()
     {
-        
+        return Page();
     }
 
     public IActionResult OnPost()
     {
-        _service.Add(BookAuthor);
-        return RedirectToPage("");
+        if (ModelState.IsValid)
+        {
+            _service.Add(BookAuthor);
+            return RedirectToPage("Index");
+        }
+
+        return Page();
     }
 }

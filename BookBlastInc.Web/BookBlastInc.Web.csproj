@@ -21,6 +21,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <PackageReference Include="bootstrap.chosen" Version="1.0.0" />
       <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.5" />
       <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.4">
         <PrivateAssets>all</PrivateAssets>
@@ -107,6 +108,8 @@
       <_ContentIncludedByDefault Remove="wwwroot\vendor\swiper\swiper-bundle.min.css" />
       <_ContentIncludedByDefault Remove="wwwroot\vendor\swiper\swiper-bundle.min.js" />
       <_ContentIncludedByDefault Remove="wwwroot\vendor\swiper\swiper-bundle.min.js.map" />
+      <_ContentIncludedByDefault Remove="Pages\AuthorsPage\AddAuthor.cshtml" />
+      <_ContentIncludedByDefault Remove="Pages\AuthorsPage\Authors.cshtml" />
     </ItemGroup>
 
     <ItemGroup>

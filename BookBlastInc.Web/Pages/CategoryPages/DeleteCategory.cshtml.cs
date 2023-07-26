@@ -19,7 +19,7 @@ public class DeleteCategory : PageModel
     public void OnGet(Guid? id)
     {
         if (id is not null)
-            Category = _service.Return(id);
+            Category = _service.GetById(id);
     }
 
     public IActionResult OnPost(Guid id)

@@ -1,11 +1,12 @@
 @page
-@model BookBlastInc.Web.Pages.CategoryPages.AddNewCategory
+@model BookBlastInc.Web.Pages.CategoryPages.EditCategory
 
 <div class="card-body p-3">
     <form method="post" class="row">
+        <input asp-for="Category.Id" hidden/>
         <div class="border p-3  mt-4">
             <div class="row pb-2">
-                <h2 class="text-primary py-3 ">Add New Category</h2>
+                <h2 class="text-primary py-3 ">Edit Category</h2>
                 <hr/>
             </div>
             <div asp-validation-summary="All"></div>
@@ -15,9 +16,9 @@
                 <span asp-validation-for="Category.Name" class="text-danger"></span><br/>
             </div>
         </div>
-            
+
         <button type="submit" class="btn btn-primary" style="width: 100px">Submit</button>
         <a asp-page="CategoryPages/Index">Back to listing</a>
-      
+
     </form>
 </div>

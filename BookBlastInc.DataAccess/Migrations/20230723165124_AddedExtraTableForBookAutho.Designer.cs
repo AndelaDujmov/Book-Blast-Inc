@@ -3,6 +3,7 @@ using System;
 using BookBlastInc.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BookBlastInc.DataAccess.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230723165124_AddedExtraTableForBookAutho")]
+    partial class AddedExtraTableForBookAutho
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -55,15 +58,11 @@ namespace BookBlastInc.DataAccess.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<string>("PhotoUrl")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<DateTime?>("ReleaseDate")
-                        .HasColumnType("datetime(6)");
+                    b.Property<DateOnly>("ReleaseDate")
+                        .HasColumnType("date");
 
                     b.HasKey("Id");
 
@@ -78,7 +77,7 @@ namespace BookBlastInc.DataAccess.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("char(36)");
 
-                    b.Property<Guid?>("Authorid")
+                    b.Property<Guid>("Authorid")
                         .HasColumnType("char(36)");
 
                     b.Property<Guid>("BookId")
@@ -108,6 +107,21 @@ namespace BookBlastInc.DataAccess.Migrations
                     b.ToTable("Categories");
                 });
 
+            modelBuilder.Entity("BookBlastInc.Core.Entities.Genre", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Genres");
+                });
+
             modelBuilder.Entity("BookBlastInc.Core.Entities.Order", b =>
                 {
                     b.Property<Guid>("Id")
@@ -134,7 +148,9 @@ namespace BookBlastInc.DataAccess.Migrations
                 {
                     b.HasOne("BookBlastInc.Core.Entities.Author", "Author")
                         .WithMany()
-                        .HasForeignKey("Authorid");
+                        .HasForeignKey("Authorid")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("BookBlastInc.Core.Entities.Book", "Book")
                         .WithMany()

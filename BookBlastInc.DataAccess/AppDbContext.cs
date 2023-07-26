@@ -17,29 +17,12 @@ public class AppDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Role>().HasData(
-            new Role()
-            {
-                Id = Guid.NewGuid(),
-                Name = "Administrator"
-            },
-            new Role()
-            {
-                Id = Guid.NewGuid(),
-                Name = "Client"
-            },
-            new Role()
-            {
-                Id = Guid.NewGuid(),
-                Name = "Employee"
-            });
-
+        
     }
     
     public DbSet<Category> Categories { get; set; }
-    public DbSet<Role> Roles { get; set; }
     public DbSet<Book> Books { get; set; }
     public DbSet<Author> Authors { get; set; }
-    public DbSet<Genre> Genres { get; set; }
     public DbSet<Order> Orders { get; set; }
+    public DbSet<BookAuthor> BookAuthors { get; set; }
 }

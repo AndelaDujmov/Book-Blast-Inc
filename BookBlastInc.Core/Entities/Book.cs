@@ -1,6 +1,7 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
 using BookBlastInc.Core.Entities.Base;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 
 namespace BookBlastInc.Core.Entities;
@@ -12,8 +13,11 @@ public class Book : BaseEntity
     public string About { get; set; }
     public Guid CategoryId { get; set; }
     [ForeignKey("CategoryId")]
+    [ValidateNever]
     public Category? Category { get; set; }
     [DisplayName("Release Date")]
-    public DateOnly ReleaseDate { get; set; }
+    public DateTime? ReleaseDate { get; set; }
     public decimal Price { get; set; }
+    [DisplayName("Book Image")]
+    public string PhotoUrl { get; set; }
 }

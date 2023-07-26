@@ -39,6 +39,11 @@ public class Repository<T>  : IRepository<T> where T:class
         _dbContext.SaveChanges();
     }
 
+    public void Update(T obj)
+    {
+        _dbSet.Update(obj);
+    }
+
     public void Delete(T obj)
     {
         _dbSet.Remove(obj);

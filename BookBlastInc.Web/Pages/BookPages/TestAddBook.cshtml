@@ -1,0 +1,37 @@
+@page
+@model BookBlastInc.Web.Pages.BookPages.TestAddBook
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/habibmhamadi/multi-select-tag/dist/css/multi-select-tag.css">
+</head>
+<body>
+@{
+    ViewData["Title"] = "Multiple Select List Input - Razor Pages";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<h2>Multiple Select List Input - MVC</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.ListBoxFor(m => m.SelectedOptions, Model.AvailableOptions, new
+    {
+        @class = "form-control chosen-select",
+        @multiple = true,
+        @id = "selected"
+    })
+    <input type="submit" value="Submit"/>
+}
+
+<script src="https://cdn.jsdelivr.net/gh/habibmhamadi/multi-select-tag/dist/js/multi-select-tag.js"></script>
+<script>
+    $('chosen-select').chosen();
+
+ 
+    
+</script>
+</body>
+</html>

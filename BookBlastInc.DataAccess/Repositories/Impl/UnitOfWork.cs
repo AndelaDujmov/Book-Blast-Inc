@@ -6,6 +6,8 @@ public class UnitOfWork : IUnitOfWork
     public ICategoryRepository CategoryRepository { get; private set; }
     public IAuthorRepository AuthorRepository { get; private set; }
     public IBookRepository BookRepository { get; private set; }
+    public IBookAuthorRepository BookAuthorRepository { get; }
+
 
     public UnitOfWork(AppDbContext appDbContext)
     {
@@ -13,5 +15,7 @@ public class UnitOfWork : IUnitOfWork
         CategoryRepository = new CategoryRepository(_dbContext);
         AuthorRepository = new AuthorRepository(_dbContext);
         BookRepository = new BookRepository(_dbContext);
+        BookAuthorRepository = new BookAuthorRepository(_dbContext);
+
     }
 }

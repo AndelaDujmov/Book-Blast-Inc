@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace BookBlastInc.Web.Pages.BookPages;
-
+[BindProperties]
 public class AddBook : PageModel
 {
     private readonly BookService _service;
@@ -19,11 +19,13 @@ public class AddBook : PageModel
         _service = service;
     }
     
-    public void OnGet()
+    public IActionResult OnGet()
     {
+        var authorIds = new List<Guid>();
         BookAuthor.SelectListItems = _service.GetSelectList();
         BookAuthor.Categories = _service.GetCategories();
         BookAuthor.Book = new Book();
+        return Page();
     }
 
     public IActionResult OnPost()
@@ -32,8 +34,17 @@ public class AddBook : PageModel
         {
             try
             {
-                _service.AddBookToAuthor(id: BookAuthor.Author, book: BookAuthor.Book);
-                _service.AddCategoryToBook(id: BookAuthor.Book.Id, category: CategoryId);
+                _service.Add(BookAuthor.Book);
+                _service.AddCategoryToBook(book: BookAuthor.Book, category: CategoryId);
+                
+                BookAuthor.AuthorIds.ToList().ForEach(x =>
+                {
+                    var bookauthor = new BookAuthor();
+                    bookauthor.Authorid = x;
+                    bookauthor.BookId = BookAuthor.Book.Id;
+                    _service.AddBookToAuthor(bookauthor, BookAuthor.Book);
+                });
+                
 
                 return RedirectToPage("AllBooks");
             }

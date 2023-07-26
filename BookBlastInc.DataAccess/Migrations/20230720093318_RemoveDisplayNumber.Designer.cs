@@ -3,6 +3,7 @@ using System;
 using BookBlastInc.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BookBlastInc.DataAccess.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230720093318_RemoveDisplayNumber")]
+    partial class RemoveDisplayNumber
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -23,6 +26,9 @@ namespace BookBlastInc.DataAccess.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<Guid>("BookId")
                         .HasColumnType("char(36)");
 
                     b.Property<string>("FirstName")
@@ -51,46 +57,26 @@ namespace BookBlastInc.DataAccess.Migrations
                     b.Property<Guid>("CategoryId")
                         .HasColumnType("char(36)");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("longtext");
+                    b.Property<Guid?>("MedicationId")
+                        .HasColumnType("char(36)");
 
-                    b.Property<string>("PhotoUrl")
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<DateTime?>("ReleaseDate")
-                        .HasColumnType("datetime(6)");
+                    b.Property<DateOnly>("ReleaseDate")
+                        .HasColumnType("date");
 
                     b.HasKey("Id");
 
                     b.HasIndex("CategoryId");
 
+                    b.HasIndex("MedicationId");
+
                     b.ToTable("Books");
-                });
-
-            modelBuilder.Entity("BookBlastInc.Core.Entities.BookAuthor", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("char(36)");
-
-                    b.Property<Guid?>("Authorid")
-                        .HasColumnType("char(36)");
-
-                    b.Property<Guid>("BookId")
-                        .HasColumnType("char(36)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Authorid");
-
-                    b.HasIndex("BookId");
-
-                    b.ToTable("BookAuthors");
                 });
 
             modelBuilder.Entity("BookBlastInc.Core.Entities.Category", b =>
@@ -106,6 +92,21 @@ namespace BookBlastInc.DataAccess.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Categories");
+                });
+
+            modelBuilder.Entity("BookBlastInc.Core.Entities.Genre", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Genres");
                 });
 
             modelBuilder.Entity("BookBlastInc.Core.Entities.Order", b =>
@@ -127,24 +128,16 @@ namespace BookBlastInc.DataAccess.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("BookBlastInc.Core.Entities.Author", null)
+                        .WithMany("Books")
+                        .HasForeignKey("MedicationId");
+
                     b.Navigation("Category");
                 });
 
-            modelBuilder.Entity("BookBlastInc.Core.Entities.BookAuthor", b =>
+            modelBuilder.Entity("BookBlastInc.Core.Entities.Author", b =>
                 {
-                    b.HasOne("BookBlastInc.Core.Entities.Author", "Author")
-                        .WithMany()
-                        .HasForeignKey("Authorid");
-
-                    b.HasOne("BookBlastInc.Core.Entities.Book", "Book")
-                        .WithMany()
-                        .HasForeignKey("BookId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Author");
-
-                    b.Navigation("Book");
+                    b.Navigation("Books");
                 });
 #pragma warning restore 612, 618
         }

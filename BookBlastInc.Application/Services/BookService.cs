@@ -8,7 +8,7 @@ namespace BookBlastInc.Application.Services;
 public class BookService
 {
     private readonly IUnitOfWork _repository;
-    
+
     public BookService(IUnitOfWork repository)
     {
         _repository = repository;
@@ -26,9 +26,10 @@ public class BookService
         _repository.BookRepository.Save();
     }
 
+
     public IEnumerable<SelectListItem> GetSelectList()
     {
-        var items =  _repository.AuthorRepository.GetAll();
+        var items = _repository.AuthorRepository.GetAll();
 
         return items.Select(x =>
             new SelectListItem
@@ -38,41 +39,42 @@ public class BookService
             }
         );
     }
-    
+
     public IEnumerable<SelectListItem> GetCategories()
     {
-        var items =  _repository.CategoryRepository.GetAll();
+        var items = _repository.CategoryRepository.GetAll();
 
         return items.Select(x =>
             new SelectListItem
             {
                 Value = x.Id.ToString(),
-                Text = x.Name 
+                Text = x.Name
             }
         );
     }
 
-    public void AddBookToAuthor(Guid id, Book book)
+    public void AddBookToAuthor(BookAuthor bookAuthor, Book book)
     {
-        var author = _repository.AuthorRepository.GetById(id);
-        
-        if(author.Equals(null)) return;
 
-        author.BookId = book.Id;
-        _repository.AuthorRepository.Save();
+        bookAuthor.BookId = book.Id;
+        _repository.BookAuthorRepository.Add(bookAuthor);
+        _repository.BookAuthorRepository.Save();
     }
-    
-    
+
+
     public Author GetById(Guid id)
     {
         return _repository.AuthorRepository.Get(x => x.Id.Equals(id));
     }
 
-    public void AddCategoryToBook(Guid id, Guid category)
+    public void AddCategoryToBook(Book book, Guid category)
     {
-        var book = _repository.BookRepository.Get(x => x.Id.Equals(id));
-
-        book.CategoryId = category;
-        _repository.BookRepository.Save();
+        if (!book.CategoryId.Equals(null))
+        {
+            book.CategoryId = category;
+            _repository.BookRepository.Add(book);
+            _repository.BookRepository.Save();
+        }
     }
+
 }

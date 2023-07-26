@@ -27,19 +27,25 @@ public class CategoryService
         _repository.CategoryRepository.Save();
     }
 
-    public Category Return(Guid? id)
+    public Category GetById(Guid? id)
     {
         return _repository.CategoryRepository.Get(x => x.Id.Equals(id)) ?? new Category();
     }
 
     public bool Remove(Guid id)
     {
-        var category = Return(id);
+        var category = GetById(id);
 
         if (category is null) return false;
-
+        
         _repository.CategoryRepository.Delete(category);
         _repository.CategoryRepository.Save();
         return true;
+    }
+
+    public void Update(Category category)
+    {
+        _repository.CategoryRepository.Update(category);
+        _repository.CategoryRepository.Save();
     }
 }
