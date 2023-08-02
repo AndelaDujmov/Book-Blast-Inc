@@ -67,14 +67,59 @@ public class BookService
         return _repository.AuthorRepository.Get(x => x.Id.Equals(id));
     }
 
-    public void AddCategoryToBook(Book book, Guid category)
+    public Book GetBook(Guid? id)
     {
-        if (!book.CategoryId.Equals(null))
-        {
-            book.CategoryId = category;
-            _repository.BookRepository.Add(book);
-            _repository.BookRepository.Save();
-        }
+        return _repository.BookRepository.Get(x => x.Id.Equals(id));
     }
 
+    public void AddBook(Book book)
+    {
+        _repository.BookRepository.Add(book);
+        _repository.BookRepository.Save();
+        
+    }
+
+    public IEnumerable<Book> GetBooks()
+    {
+        var books =  _repository.BookRepository.GetAll();
+        
+        books.ToList().ForEach(book => book.CategoryName = SetCategoryName(book));
+
+        return books;
+    }
+
+    public bool IfBookExists(Book book)
+    {
+        return GetBooks().Contains(book) ? true : false;
+    }
+
+    public void UpdateBook(Book book)
+    {
+        _repository.BookRepository.Update(book);
+        _repository.BookRepository.Save();
+    }
+    
+    public void UpdateBookAuthor(BookAuthor bookauthor, Book bookAuthorBook)
+    {
+        bookauthor.BookId = bookAuthorBook.Id;
+        _repository.BookAuthorRepository.Update(bookauthor);
+        _repository.BookRepository.Save();
+    }
+
+    public IEnumerable<Book> GetAllBooksByCategory(Guid id)
+    {
+        var books = _repository.BookRepository.GetAll();
+        
+        if(books!= null)
+           books = books.Where(x => x.CategoryId.Equals(id));
+
+        return books;
+    }
+    
+    private string SetCategoryName(Book book)
+    {
+       return _repository.CategoryRepository.Get(x => x.Id.Equals(book.CategoryId)).Name;
+    }
+
+  
 }

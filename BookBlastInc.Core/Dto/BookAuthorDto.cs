@@ -7,7 +7,7 @@ namespace BookBlastInc.Core.Dto;
 
 public class BookAuthorDto
 {
-    public Book Book { get; set; } = new Book();
+    public Book Book { get; set; }
     [ValidateNever]
     public IEnumerable<SelectListItem>? SelectListItems { get; set; }
 

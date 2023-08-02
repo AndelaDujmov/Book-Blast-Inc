@@ -1,0 +1,29 @@
+@page
+@using Microsoft.EntityFrameworkCore
+@model BookBlastInc.Web.Pages.BookPages.GetBooksByCategory
+
+<table class="table">
+   @if (Model.Books != null)
+   {
+      <thead class="table-dark">
+      <tr>
+         <th scope="col">Book</th>
+         <th scope="col">Author</th>
+         <th scope="col">Release date</th>
+         <th scope="col">Release date</th>
+      </tr>
+      </thead>
+      <tbody>
+      @foreach (var element in Model.Books)
+      {
+         <tr>
+           
+            <td>@element.Name</td>
+            <td></td>
+            <td>@element.ReleaseDate</td>
+            <td> @element.Price Eur</td>
+         </tr>
+      }
+      </tbody>
+   }
+</table>

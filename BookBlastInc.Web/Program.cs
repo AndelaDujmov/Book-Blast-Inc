@@ -3,17 +3,26 @@ using BookBlastInc.DataAccess;
 using BookBlastInc.DataAccess.Repositories;
 using BookBlastInc.DataAccess.Repositories.Impl;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
+var connectionString = builder.Configuration.GetConnectionString("AppDbContextConnection") ?? throw new InvalidOperationException("Connection string 'AppDbContextConnection' not found.");
 
 // Add services to the container.
 builder.Services.AddRazorPages();
 
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseMySQL("server=localhost;database=bookblast;uid=root;pwd=andu404595;"));
+{
+    options.UseMySQL("server=localhost;database=bookblast;uid=root;pwd=andu404595;");
+    options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
+});
+
+builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false)
+    .AddEntityFrameworkStores<AppDbContext>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddTransient<CategoryService>();
 builder.Services.AddTransient<BookService>();
+
 
 var app = builder.Build();
 
@@ -29,7 +38,7 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
-
+app.UseAuthentication();;
 app.UseAuthorization();
 
 app.MapRazorPages();

@@ -1,19 +1,39 @@
 @page
 @model BookBlastInc.Web.Pages.BookPages.AllBooks
 
-@{
-    Layout = null;
-}
-
-<!DOCTYPE html>
-
-<html>
-<head>
-    <title></title>
-</head>
-<body>
-<div>
-    
+<div class="col-6 text-end">
+    <a asp-page="/BookPages/AddBook" class="btn btn-secondary">
+        <i class="bi bi-plus-circle-dotted"></i> &nbsp; Add new book
+    </a>
 </div>
-</body>
-</html>
+<table class="table table-secondary table-bordered">
+    <thead>
+    <tr>
+        <th scope="col">Name</th>
+        <th scope="col">Category</th>
+        <th scope="col">About</th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    @if (!@Model.Books.Equals(null))
+    {
+        foreach (var book in @Model.Books)
+        {
+            <tr>
+                <td>@book.Name</td>
+                <td>@book.CategoryName</td>
+                <td>@book.About</td>
+                <td>
+                    <a asp-page="/BookPages/AddBook" asp-route-id="@book.Id" class="btn btn-secondary">
+                        <i class="bi bi-plus-circle-dotted"></i> &nbsp; Edit book
+                    </a>
+                    <a asp-page="/BookPages/AddBook" asp-route-id="@book.Id" class="btn btn-secondary">
+                        <i class="bi bi-plus-circle-dotted"></i> &nbsp; Delete book
+                    </a>
+                </td>
+            </tr>
+        }
+    }
+    </tbody>
+</table>

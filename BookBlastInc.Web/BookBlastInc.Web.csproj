@@ -22,6 +22,8 @@
 
     <ItemGroup>
       <PackageReference Include="bootstrap.chosen" Version="1.0.0" />
+      <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.18" />
+      <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="6.0.20" />
       <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.5" />
       <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.4">
         <PrivateAssets>all</PrivateAssets>
@@ -110,10 +112,15 @@
       <_ContentIncludedByDefault Remove="wwwroot\vendor\swiper\swiper-bundle.min.js.map" />
       <_ContentIncludedByDefault Remove="Pages\AuthorsPage\AddAuthor.cshtml" />
       <_ContentIncludedByDefault Remove="Pages\AuthorsPage\Authors.cshtml" />
+      <_ContentIncludedByDefault Remove="wwwroot\css\images\books\32e44107-7dfa-4902-b04c-96013021e081.jpg" />
+      <_ContentIncludedByDefault Remove="wwwroot\css\images\books\79f3a5ea-628c-4eb0-bd87-0966b319ab70.jpg" />
+      <_ContentIncludedByDefault Remove="wwwroot\css\images\books\ad83ad28-a0ff-47f8-9ad4-7b99d84dc5c6.jpg" />
     </ItemGroup>
 
     <ItemGroup>
+      <Folder Include="Areas\Identity\Data\" />
       <Folder Include="Pages\OrderPages\" />
+      <Folder Include="wwwroot\books\" />
     </ItemGroup>
 
 </Project>

@@ -11,7 +11,7 @@ public class Book : BaseEntity
     [DisplayName("Book Name")]
     public string Name { get; set; }
     public string About { get; set; }
-    public Guid CategoryId { get; set; }
+    public Guid? CategoryId { get; set; }
     [ForeignKey("CategoryId")]
     [ValidateNever]
     public Category? Category { get; set; }
@@ -19,5 +19,8 @@ public class Book : BaseEntity
     public DateTime? ReleaseDate { get; set; }
     public decimal Price { get; set; }
     [DisplayName("Book Image")]
-    public string PhotoUrl { get; set; }
+    public string? PhotoUrl { get; set; }
+    [NotMapped]
+    public string CategoryName { get; set; }
+    
 }
