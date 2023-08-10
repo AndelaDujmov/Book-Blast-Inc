@@ -11,12 +11,15 @@ using System.Text.Encodings.Web;
 using System.Threading;
 using System.Threading.Tasks;
 using BookBlastInc.Core.Entities;
+using BookBlastInc.Core.Enums;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 
@@ -25,25 +28,29 @@ namespace BookBlastInc.Web.Areas.Identity.Pages.Account
     public class RegisterModel : PageModel
     {
         private readonly SignInManager<IdentityUser> _signInManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
         private readonly UserManager<IdentityUser> _userManager;
         private readonly IUserStore<IdentityUser> _userStore;
         private readonly IUserEmailStore<IdentityUser> _emailStore;
         private readonly ILogger<RegisterModel> _logger;
-        private readonly IEmailSender _emailSender;
+      //  private readonly IEmailSender _emailSender;
 
         public RegisterModel(
             UserManager<IdentityUser> userManager,
-            IUserStore<IdentityUser> userStore,
+            RoleManager<IdentityRole> roleManager,
+        IUserStore<IdentityUser> userStore,
             SignInManager<IdentityUser> signInManager,
-            ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            ILogger<RegisterModel> logger
+         //   IEmailSender emailSender
+         )
         {
             _userManager = userManager;
+            _roleManager = roleManager;
             _userStore = userStore;
             _emailStore = GetEmailStore();
             _signInManager = signInManager;
             _logger = logger;
-            _emailSender = emailSender;
+          //  _emailSender = emailSender;
         }
 
         /// <summary>
@@ -80,6 +87,9 @@ namespace BookBlastInc.Web.Areas.Identity.Pages.Account
             [Display(Name = "Email")]
             public string Email { get; set; }
 
+            [Required]
+            public string? Username { get; set; }
+
             /// <summary>
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
@@ -98,11 +108,37 @@ namespace BookBlastInc.Web.Areas.Identity.Pages.Account
             [Display(Name = "Confirm password")]
             [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
             public string ConfirmPassword { get; set; }
+            
+            public string? Role { get; set; }
+            
+            [ValidateNever]
+            public IEnumerable<SelectListItem> RoleList { get; set; }
+            [Required]
+            public string? FirstName { get; set; }
+            [Required]
+            public string? LastName { get; set; }
+            public DateTime DateOfBirth { get; set; }
+            public Gender Gender { get; set; }
         }
 
 
         public async Task OnGetAsync(string returnUrl = null)
         {
+            if (!_roleManager.RoleExistsAsync(RoleName.Administrator.ToString()).GetAwaiter().GetResult()) 
+                _roleManager.CreateAsync(new IdentityRole(RoleName.Administrator.ToString())).GetAwaiter().GetResult();
+            if (!_roleManager.RoleExistsAsync(RoleName.User.ToString()).GetAwaiter().GetResult()) 
+                _roleManager.CreateAsync(new IdentityRole(RoleName.User.ToString())).GetAwaiter().GetResult();
+
+            Input = new()
+            {
+                RoleList = _roleManager.Roles.Where(role => !role.Name.Equals(RoleName.Administrator.ToString())).Select(role => role.Name).Select(item => new SelectListItem
+                {
+                    Value = item,
+                    Text = item
+                })
+            };
+
+            
             ReturnUrl = returnUrl;
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
         }
@@ -115,8 +151,13 @@ namespace BookBlastInc.Web.Areas.Identity.Pages.Account
             {
                 var user = CreateUser();
 
-                await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
+                await _userStore.SetUserNameAsync(user, Input.Username, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
+                user.FirstName = Input.FirstName;
+                user.LastName = Input.LastName;
+                user.DateOfBirth = Input.DateOfBirth;
+                user.Gender = Input.Gender;
+                user.Deleted = false;
                 var result = await _userManager.CreateAsync(user, Input.Password);
 
                 if (result.Succeeded)
@@ -132,8 +173,8 @@ namespace BookBlastInc.Web.Areas.Identity.Pages.Account
                         values: new { area = "Identity", userId = userId, code = code, returnUrl = returnUrl },
                         protocol: Request.Scheme);
 
-                    await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
-                        $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                //    await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
+                      //  $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
 
                     if (_userManager.Options.SignIn.RequireConfirmedAccount)
                     {

@@ -6,8 +6,10 @@ public class UnitOfWork : IUnitOfWork
     public ICategoryRepository CategoryRepository { get; private set; }
     public IAuthorRepository AuthorRepository { get; private set; }
     public IBookRepository BookRepository { get; private set; }
-    public IBookAuthorRepository BookAuthorRepository { get; }
+    public IBookAuthorRepository BookAuthorRepository { get; private set; }
+    public IShoppingCartRepository ShoppingCartRepository { get; private set; }
 
+    public IUserRepository UserRepository { get; private set; }
 
     public UnitOfWork(AppDbContext appDbContext)
     {
@@ -16,6 +18,7 @@ public class UnitOfWork : IUnitOfWork
         AuthorRepository = new AuthorRepository(_dbContext);
         BookRepository = new BookRepository(_dbContext);
         BookAuthorRepository = new BookAuthorRepository(_dbContext);
-
+        ShoppingCartRepository = new ShoppingCartRepository(_dbContext);
+        UserRepository = new UserRepository(_dbContext);
     }
 }

@@ -27,7 +27,14 @@
                         <div class="form-floating py-4">
                             <label class="col-form-label" asp-for="CategoryId">Category</label>
                             <select class="form-select" asp-items="@Model.BookAuthor.Categories" asp-for="CategoryId">
-                                <option id="select" disabled selected value="@Model.BookAuthor.Book.CategoryId">Select category</option>
+                                @if (Model.BookAuthor.Book is not null)
+                                {
+                                    <option id="select" selected value="@Model.BookAuthor.Book.CategoryId">Select category</option>
+                                }
+                                else
+                                {
+                                    <option id="select" selected >Select category</option>
+                                }
                             </select>
                         </div>
                         <div class="py-2">
@@ -66,14 +73,13 @@
                     }
                     
                     <a asp-page="CategoryPages/Index">Back to listing</a>
-                   
-                       
-                        
-                    
                 </div>  
-                 <div class="col-2">
-                    <img src="@Model.BookAuthor.Book.PhotoUrl" width="100%" style="border-radius:6px; border: 1px white; image-rendering:pixelated;"/>
-                </div>
+                @if (@Model.BookAuthor.Book is not null)
+                {
+                    <div class="col-2">
+                        <img src="@Model.BookAuthor.Book.PhotoUrl" width="100%" style="border-radius:6px; border: 1px white; image-rendering:pixelated;"/>
+                    </div>
+                }
             </div>
             
             </div>

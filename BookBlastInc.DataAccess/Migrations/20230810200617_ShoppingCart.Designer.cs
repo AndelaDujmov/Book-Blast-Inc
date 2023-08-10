@@ -3,6 +3,7 @@ using System;
 using BookBlastInc.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BookBlastInc.DataAccess.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230810200617_ShoppingCart")]
+    partial class ShoppingCart
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -116,31 +119,6 @@ namespace BookBlastInc.DataAccess.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Orders");
-                });
-
-            modelBuilder.Entity("BookBlastInc.Core.Entities.ShoppingCart", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("char(36)");
-
-                    b.Property<Guid>("BookId")
-                        .HasColumnType("char(36)");
-
-                    b.Property<int>("Count")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("varchar(255)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("BookId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("ShoppingCarts");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -394,25 +372,6 @@ namespace BookBlastInc.DataAccess.Migrations
                         .IsRequired();
 
                     b.Navigation("Author");
-
-                    b.Navigation("Book");
-                });
-
-            modelBuilder.Entity("BookBlastInc.Core.Entities.ShoppingCart", b =>
-                {
-                    b.HasOne("BookBlastInc.Core.Entities.Book", "Book")
-                        .WithMany()
-                        .HasForeignKey("BookId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("BookBlastInc.Core.Entities.ApplicationUser", "ApplicationUser")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("ApplicationUser");
 
                     b.Navigation("Book");
                 });

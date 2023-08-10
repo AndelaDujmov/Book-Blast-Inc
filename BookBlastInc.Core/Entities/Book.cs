@@ -22,5 +22,7 @@ public class Book : BaseEntity
     public string? PhotoUrl { get; set; }
     [NotMapped]
     public string CategoryName { get; set; }
+    [NotMapped]
+    public List<string>? AuthorNames { get; set; }
     
 }

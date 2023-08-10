@@ -6,5 +6,6 @@ public interface IUnitOfWork
     IAuthorRepository AuthorRepository { get; }
     IBookRepository BookRepository { get;}
     IBookAuthorRepository BookAuthorRepository { get; }
-  
+    IShoppingCartRepository ShoppingCartRepository { get; }
+    IUserRepository UserRepository { get; }
 }

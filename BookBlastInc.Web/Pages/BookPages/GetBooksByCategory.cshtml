@@ -2,28 +2,31 @@
 @using Microsoft.EntityFrameworkCore
 @model BookBlastInc.Web.Pages.BookPages.GetBooksByCategory
 
-<table class="table">
-   @if (Model.Books != null)
-   {
-      <thead class="table-dark">
-      <tr>
-         <th scope="col">Book</th>
-         <th scope="col">Author</th>
-         <th scope="col">Release date</th>
-         <th scope="col">Release date</th>
-      </tr>
-      </thead>
-      <tbody>
-      @foreach (var element in Model.Books)
-      {
-         <tr>
-           
-            <td>@element.Name</td>
-            <td></td>
-            <td>@element.ReleaseDate</td>
-            <td> @element.Price Eur</td>
-         </tr>
-      }
-      </tbody>
-   }
-</table>
+<div class="row pb-3">
+    @foreach (var book in Model.Books)
+    {
+        <div class="col-lg-6 col-sm-6">
+            <div class="row p-2">
+                <div class="col-4 p-1">
+                    <div class="card border-0 shadow border-5 rounded">
+                        <img src="@book.PhotoUrl" class="card-img-top rounded" />
+                        <div class="card-body pb-0">
+                            <div class="p-1">
+                                <p class="card-title h5 text-dark opacity-75 text-uppercase text-center">@book.Name</p>
+                                <p class="card-title text-warning text-center">by @foreach (var aut in book.AuthorNames)
+                                                                                  {
+                                                                                      <b>@aut</b>
+                                                                                  }</p>
+                            </div>
+                            <div class="p-1">
+                                <p class="card-title h5 text-dark opacity-75 text-uppercase text-center">@book.Price.ToString("c")</p>
+                            </div>
+                        </div>
+                        <a  asp-page="/BookPages/BookDetails" asp-route-id="@book.Id" class="btn btn-primary mx-2">Details</a>
+                    </div>
+                </div>
+               
+            </div>
+        </div>
+    }
+</div>

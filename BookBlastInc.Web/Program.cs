@@ -17,8 +17,9 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
 });
 
-builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false)
-    .AddEntityFrameworkStores<AppDbContext>();
+builder.Services.AddControllersWithViews();
+builder.Services.AddIdentity<IdentityUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = false)
+    .AddEntityFrameworkStores<AppDbContext>().AddDefaultTokenProviders();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddTransient<CategoryService>();
 builder.Services.AddTransient<BookService>();

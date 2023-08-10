@@ -13,7 +13,6 @@ public class BookAuthorDto
 
     [Display(Name = "Authors")] public Guid[] AuthorIds { get; set; } = new Guid[]{};
 
-    [ValidateNever]
-    public IEnumerable<SelectListItem>? Categories { get; set; }
+    [ValidateNever] public IEnumerable<SelectListItem>? Categories { get; set; } = new List<SelectListItem>();
 
 }

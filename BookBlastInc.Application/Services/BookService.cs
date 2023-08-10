@@ -62,14 +62,19 @@ public class BookService
     }
 
 
-    public Author GetById(Guid id)
+    public Author GetById(Guid? id)
     {
         return _repository.AuthorRepository.Get(x => x.Id.Equals(id));
     }
 
     public Book GetBook(Guid? id)
     {
-        return _repository.BookRepository.Get(x => x.Id.Equals(id));
+        var book =  _repository.BookRepository.Get(x => x.Id.Equals(id));
+
+        book.AuthorNames = GetAuthors(book.Id);
+        book.CategoryName = SetCategoryName(book);
+
+        return book;
     }
 
     public void AddBook(Book book)
@@ -82,8 +87,12 @@ public class BookService
     public IEnumerable<Book> GetBooks()
     {
         var books =  _repository.BookRepository.GetAll();
-        
-        books.ToList().ForEach(book => book.CategoryName = SetCategoryName(book));
+
+        books.ToList().ForEach(book =>
+        {
+            book.CategoryName = SetCategoryName(book);
+            book.AuthorNames = GetAuthors(book.Id);
+        }); 
 
         return books;
     }
@@ -108,7 +117,7 @@ public class BookService
 
     public IEnumerable<Book> GetAllBooksByCategory(Guid id)
     {
-        var books = _repository.BookRepository.GetAll();
+        var books = GetBooks();
         
         if(books!= null)
            books = books.Where(x => x.CategoryId.Equals(id));
@@ -121,5 +130,14 @@ public class BookService
        return _repository.CategoryRepository.Get(x => x.Id.Equals(book.CategoryId)).Name;
     }
 
-  
+    private List<string>? GetAuthors(Guid bookId)
+    {
+        var bookAuthor = _repository.BookAuthorRepository.GetAll().Where(x => x.BookId.Equals(bookId));
+
+        var authorsList = new List<string>();
+        
+        bookAuthor.ToList().ForEach(ba => authorsList.Add(GetById(ba.Authorid).FirstName + " " + GetById(ba.Authorid).LastName));
+
+        return authorsList;
+    }
 }

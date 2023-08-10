@@ -28,4 +28,5 @@ public class AppDbContext : IdentityDbContext<IdentityUser>
     public DbSet<ApplicationUser> ApplicationUsers { get; set; }
     public DbSet<Order> Orders { get; set; }
     public DbSet<BookAuthor> BookAuthors { get; set; }
+    public DbSet<ShoppingCart> ShoppingCarts { get; set; }   
 }
