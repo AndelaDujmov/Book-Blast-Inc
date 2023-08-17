@@ -1,10 +1,12 @@
-﻿<!DOCTYPE html>
+﻿
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>@ViewData["Title"] - BookBlastInc.Web</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="css/bootswatch.css"/>
      <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Montserrat:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
     
       <!-- Vendor CSS Files -->
@@ -26,46 +28,10 @@
     
 </header>
 <div class="container">
-    <main role="main" class="pb-3">
-        @RenderBody()
-    </main>
+  <main role="main" class="pb-3">
+    @RenderBody()
+  </main>
 </div>
- <header id="header" class="d-flex align-items-center">
-    <div class="container d-flex align-items-center justify-content-between">
-
-      <div class="logo">
-        <a href="index.html"><img src="assets/img/logo.png" alt="" class="img-fluid"></a>
-      </div>
-
-      <nav id="navbar" class="navbar">
-        <ul>
-          <li><a asp-page="BookPages/AllBooks">All Books</a></li>
-          
-       
-          <li class="dropdown"><a ><span>Admin tools</span> <i class="bi bi-chevron-down"></i></a>
-            <ul>
-              <li><a asp-page="CategoryPages/Categories">All Categories</a></li>
-              <li class="dropdown"><a href="#"><span>Books</span> <i class="bi bi-chevron-right"></i></a>
-              <ul>
-                 
-                <li><a asp-page="BookPages/AddAuthor">Add New Author</a></li>
-                <li><a asp-page="BookPages/AddGenre">Add New Genre</a></li>
-                 
-              </ul>
-          
-              
-            </ul>
-          </li>
-         
-        </ul>
-        
-        <i class="bi bi-list mobile-nav-toggle"></i>
-        
-      </nav><!-- .navbar -->
-       <partial name="Shared/_LoginPartial"/>
-    </div>
-   
-  </header><!-- End Header -->
 
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
 <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
@@ -83,6 +49,7 @@
 <script src="https://cdn.tiny.cloud/1/qmnzeg8q008874f5dt0zied1ipb34xtez5g30rnwpsy8zlzp/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
 <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
 <script src="~/js/site.js" asp-append-version="true"></script>
 <script src="//cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js" asp-append-version="true"></script>
 <script src="assets/vendor/aos/aos.js"></script>

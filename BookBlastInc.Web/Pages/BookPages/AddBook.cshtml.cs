@@ -27,7 +27,8 @@ public class AddBook : PageModel
         var authorIds = new List<Guid>();
         BookAuthor.SelectListItems = _service.GetSelectList();
         BookAuthor.Categories = _service.GetCategories();
-        BookAuthor.Book = id.Equals(Guid.Empty) ? new Book() : _service.GetBook(id);
+        BookAuthor.Book = id.Equals(null) ? new Book() : _service.GetBook(id);
+        
         return Page();
     }
 
@@ -60,36 +61,31 @@ public class AddBook : PageModel
 
             BookAuthor.Book.CategoryId = CategoryId;
 
-            if (_service.IfBookExists(BookAuthor.Book))
+            _service.AddBook(book: BookAuthor.Book);
+            BookAuthor.AuthorIds.ToList().ForEach(x =>
             {
-                _service.AddBook(book: BookAuthor.Book);
-                BookAuthor.AuthorIds.ToList().ForEach(x =>
-                {
-                    var bookauthor = new BookAuthor();
-                    bookauthor.Authorid = x;
-                    bookauthor.BookId = BookAuthor.Book.Id;
+                var bookauthor = new BookAuthor();
+                bookauthor.Authorid = x;
+                bookauthor.BookId = BookAuthor.Book.Id;
 
-                    _service.AddBookToAuthor(bookauthor, BookAuthor.Book);
-                });
-            }
-            else
+                _service.AddBookToAuthor(bookauthor, BookAuthor.Book);
+            });
+            
+            
+        }
+        else
+        {
+            _service.UpdateBook(book: BookAuthor.Book);
+            BookAuthor.AuthorIds.ToList().ForEach(x =>
             {
-                _service.UpdateBook(book: BookAuthor.Book);
-                BookAuthor.AuthorIds.ToList().ForEach(x =>
-                {
-                    var bookauthor = new BookAuthor();
-                    bookauthor.Authorid = x;
-                    bookauthor.BookId = BookAuthor.Book.Id;
+                var bookauthor = new BookAuthor();
+                bookauthor.Authorid = x;
+                bookauthor.BookId = BookAuthor.Book.Id;
 
-                    _service.UpdateBookAuthor(bookauthor, BookAuthor.Book);
-                });
-            }
-
-
-
-            return RedirectToPage("AllBooks");
+                _service.UpdateBookAuthor(bookauthor, BookAuthor.Book);
+            });
         }
 
-        return Page();
+        return RedirectToPage("AllBooks");
     }
 }

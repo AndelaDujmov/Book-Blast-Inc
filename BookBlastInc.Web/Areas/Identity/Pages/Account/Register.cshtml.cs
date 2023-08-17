@@ -137,7 +137,6 @@ namespace BookBlastInc.Web.Areas.Identity.Pages.Account
                     Text = item
                 })
             };
-
             
             ReturnUrl = returnUrl;
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
@@ -160,6 +159,8 @@ namespace BookBlastInc.Web.Areas.Identity.Pages.Account
                 user.Deleted = false;
                 var result = await _userManager.CreateAsync(user, Input.Password);
 
+                await _userManager.AddToRoleAsync(user, RoleName.User.ToString());
+                
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User created a new account with password.");

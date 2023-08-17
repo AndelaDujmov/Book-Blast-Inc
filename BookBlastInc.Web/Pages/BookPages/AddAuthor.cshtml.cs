@@ -26,7 +26,7 @@ public class AddAuthor : PageModel
         if (ModelState.IsValid)
         {
             _service.Add(BookAuthor);
-            return RedirectToPage("Index");
+            return RedirectToPage("AllBooks");
         }
 
         return Page();

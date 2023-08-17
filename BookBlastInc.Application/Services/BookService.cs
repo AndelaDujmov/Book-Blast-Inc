@@ -140,4 +140,96 @@ public class BookService
 
         return authorsList;
     }
+
+    public void AddToCart(string userId, int count, Guid bookId)
+    {
+        var shoppingCard = new ShoppingCart();
+        shoppingCard.BookId = bookId;
+        shoppingCard.UserId = userId;
+        shoppingCard.Count = count;
+
+        var cartByDb = _repository.ShoppingCartRepository.Get(cart => cart.UserId.Equals(userId) && cart.BookId.Equals(bookId));
+
+        if (cartByDb is not null)
+        {
+            cartByDb.Count += count;
+            _repository.ShoppingCartRepository.Update(cartByDb);
+        }
+        else
+        {
+            _repository.ShoppingCartRepository.Add(shoppingCard);
+        }
+        
+        _repository.ShoppingCartRepository.Save();
+    }
+
+    public IEnumerable<ShoppingCart> GetAllPurchasesByUser(string userId)
+    {
+        var booksCart = _repository.ShoppingCartRepository.GetAll()
+            .Where(x => x.UserId.Equals(userId));
+        
+        booksCart.ToList().ForEach(bc => bc.Book = _repository.BookRepository.Get(x => x.Id.Equals(bc.BookId)));
+
+        return booksCart;
+    }
+
+    public decimal GetPriceByQuantity(ShoppingCart shoppingCart)
+    {
+        var bookPrice = _repository.BookRepository.Get(x => x.Id.Equals(shoppingCart.BookId)).Price;
+
+        return bookPrice * shoppingCart.Count;
+    }
+    
+    public void ByOperationChangeCountOrRmv(Guid cartId, string operation)
+    {
+        var cart = _repository.ShoppingCartRepository.Get(x => x.Id.Equals(cartId));
+
+        switch (operation)
+        {
+            case "+":
+                Add(cart);
+                break;
+            case "-":
+                Reduce(cart);
+                break;
+            case "x":
+                Remove(cartId);
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void Add(ShoppingCart cart)
+    {
+        cart.Count+=1;
+        
+        _repository.ShoppingCartRepository.Update(cart);
+        _repository.ShoppingCartRepository.Save();
+    }
+
+    private void Reduce(ShoppingCart cart)
+    {
+        if (cart.Count <= 1)
+        {
+            _repository.ShoppingCartRepository.Delete(cart);
+            _repository.ShoppingCartRepository.Save();
+        }
+        else
+        {
+            cart.Count-=1;
+        
+            _repository.ShoppingCartRepository.Update(cart);
+            _repository.ShoppingCartRepository.Save();
+        }
+    }
+
+    private void Remove(Guid cartId)
+    {
+        var cart = _repository.ShoppingCartRepository.Get(x => x.Id.Equals(cartId));
+
+
+        _repository.ShoppingCartRepository.Delete(cart);
+        _repository.ShoppingCartRepository.Save();
+    }
 }
