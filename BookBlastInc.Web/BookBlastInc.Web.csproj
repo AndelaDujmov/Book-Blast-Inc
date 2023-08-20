@@ -32,6 +32,7 @@
         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       </PackageReference>
       <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.13" />
+      <PackageReference Include="Stripe.net" Version="41.9.0" />
     </ItemGroup>
 
     <ItemGroup>
@@ -121,7 +122,6 @@
 
     <ItemGroup>
       <Folder Include="Areas\Identity\Data\" />
-      <Folder Include="Pages\OrderPages\" />
       <Folder Include="wwwroot\books\" />
     </ItemGroup>
 

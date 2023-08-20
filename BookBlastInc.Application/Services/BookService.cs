@@ -1,7 +1,9 @@
 using BookBlastInc.Core.Entities;
+using BookBlastInc.Core.Enums;
 using BookBlastInc.DataAccess.Repositories;
 using BookBlastInc.DataAccess.Repositories.Impl;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using MySqlX.XDevAPI;
 
 namespace BookBlastInc.Application.Services;
 
@@ -178,6 +180,44 @@ public class BookService
         var bookPrice = _repository.BookRepository.Get(x => x.Id.Equals(shoppingCart.BookId)).Price;
 
         return bookPrice * shoppingCart.Count;
+    }
+
+    public ApplicationUser GetUserId(string id)
+    {
+        return _repository.UserRepository.Get(x => x.Id.Equals(id));
+    }
+    
+    public void AddNewOrder(Order order)
+    {
+        _repository.OrderRepository.Add(order);
+        _repository.OrderRepository.Save();
+    }
+    
+    public void CreateOrderForBook(ShoppingCart el, Guid orderId)
+    {
+        var orderForBook = new OrderBook();
+        orderForBook.BookId = el.BookId;
+        orderForBook.OrderId = orderId;
+        orderForBook.Count = el.Count;
+        orderForBook.Price = el.Count * el.Book.Price;
+        _repository.BookOrderRepository.Add(orderForBook);
+        _repository.BookOrderRepository.Save();
+    }
+
+    public void UpdateOrderStatus(Guid id, PaymentStatus paymentStatus, OrderStatus orderStatus)
+    {
+        _repository.OrderRepository.UpdateStatus(id, orderStatus, paymentStatus);
+        _repository.OrderRepository.Save();
+    }
+    public void UpdateStripePayment(Guid id, string sessionid, string paymentid)
+    {
+        _repository.OrderRepository.UpdatePayment(id, paymentid, sessionid);
+     
+    }
+
+    public Order GetOrderById(Guid id)
+    {
+        return _repository.OrderRepository.Get(x => x.Id.Equals(id));
     }
     
     public void ByOperationChangeCountOrRmv(Guid cartId, string operation)

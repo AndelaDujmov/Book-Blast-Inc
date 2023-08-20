@@ -1,45 +1,6 @@
 @page
 @model BookBlastInc.Web.Pages.ShoppingCartPages.OrderSummary
-<nav class="navbar navbar-expand-lg bg-light" data-bs-theme="light">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="#">Navbar</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor03" aria-controls="navbarColor03" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarColor03">
-            <ul class="navbar-nav me-auto">
-                <li class="nav-item">
-                    <a class="nav-link active" asp-page="">Home
-                        <span class="visually-hidden">(current)</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">All Books</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#"></a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">About</a>
-                </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Dropdown</a>
-                    <div class="dropdown-menu">
-                        <a class="dropdown-item" href="#">Action</a>
-                        <a class="dropdown-item" href="#">Another action</a>
-                        <a class="dropdown-item" href="#">Something else here</a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="#">Separated link</a>
-                    </div>
-                </li>
-                 <li class="nav-item">
-                    <a class="nav-link" href="#"><i class="bi bi-cart2"></i>&nbsp; (0)</a>
-                </li>
-            </ul>
-        </div>
-    </div>
-    <partial name="_LoginPartial"/>
-</nav>
+
 <form method="post">
 	<br />
 	<div class="container">
@@ -71,8 +32,8 @@
 									<label>Name</label>
 								</div>
 								<div class="col-9">
-									<input class="form-control" />
-									<span  class="text-danger"></span>
+									<input asp-for="Order.Name" class="form-control" />
+									<span asp-validation-for="Order.Name" class="text-danger"></span>
 								</div>
 							</div>
 							<div class="row my-1">
@@ -80,8 +41,8 @@
 									<label>Phone</label>
 								</div>
 								<div class="col-9">
-									<input  class="form-control" />
-									<span  class="text-danger"></span>
+									<input asp-for="Order.PhoneNumber" class="form-control" />
+									<span asp-validation-for="Order.PhoneNumber" class="text-danger"></span>
 								</div>
 							</div>
 							<div class="row my-1">
@@ -89,8 +50,8 @@
 									<label>Street Address</label>
 								</div>
 								<div class="col-9">
-									<input  class="form-control" />
-									<span  class="text-danger"></span>
+									<input asp-for="Order.StreetAddress" class="form-control" />
+									<span asp-validation-for="Order.StreetAddress" class="text-danger"></span>
 								</div>
 							</div>
 							<div class="row my-1">
@@ -98,8 +59,8 @@
 									<label>City</label>
 								</div>
 								<div class="col-9">
-									<input  class="form-control" />
-									<span class="text-danger"></span>
+									<input asp-for="Order.City" class="form-control" />
+									<span asp-validation-for="Order.City" class="text-danger"></span>
 								</div>
 							</div>
 							<div class="row my-1">
@@ -107,8 +68,8 @@
 									<label>State</label>
 								</div>
 								<div class="col-9">
-									<input class="form-control" />
-									<span  class="text-danger"></span>
+									<input asp-for="Order.Country" class="form-control" />
+									<span asp-validation-for="Order.Country" class="text-danger"></span>
 								</div>
 							</div>
 							<div class="row my-1">
@@ -116,8 +77,8 @@
 									<label>Postal Code</label>
 								</div>
 								<div class="col-9">
-									<input  class="form-control" />
-									<span  class="text-danger"></span>
+									<input asp-for="Order.PostalCode" class="form-control" />
+									<span asp-validation-for="Order.PostalCode" class="text-danger"></span>
 								</div>
 							</div>
 						</div>
@@ -126,20 +87,20 @@
 								<span class="text-info">Order Summary:</span>
 							</h4>
 							<ul class="list-group mb-3">
-								@*@foreach(var details in Model.ShoppingCartList){
+								@foreach(var details in Model.ShoppingCarts){
 								<li class="list-group-item d-flex justify-content-between">
 									<div>
-											<h6 class="my-0">@details.Product.Title</h6>
+											<h6 class="my-0">@details.Book.Name</h6>
 											<small class="text-muted">Quantity: @details.Count</small>
 									</div>
-									<span class="text-muted">@((details.Price*details.Count).ToString("c")) </span>
+									<span class="text-muted">@(string.Format("€{0:N2}",details.Book.Price*details.Count)) </span>
 								</li>
 								}
 
 								<li class="list-group-item d-flex justify-content-between bg-light">
-									<small class="text-info">Total (USD)</small>
-									<strong class="text-info">@Model.OrderHeader.OrderTotal.ToString("c")</strong>
-								</li>*@
+									<small class="text-info">Total (&euro;)</small>
+									<strong class="text-info">@string.Format("€{0:N2}",Model.Order.Total)</strong>
+								</li>
 							</ul>
 						</div>
 					</div>

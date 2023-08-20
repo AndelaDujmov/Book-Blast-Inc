@@ -16,8 +16,7 @@ public class Index : PageModel
     }
 
     [BindProperty] public IEnumerable<ShoppingCart> ShoppingCarts { get; set; } = new List<ShoppingCart>();
-    [BindProperty]
-    public decimal TotalPrice { get; set; }
+    [BindProperty] public Order Order { get; set; } = new Order();
     
     public void OnGet()
     {
@@ -26,7 +25,8 @@ public class Index : PageModel
         ShoppingCarts =
             _service.GetAllPurchasesByUser(userId: claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value);
         
-        ShoppingCarts.ToList().ForEach(x => TotalPrice += _service.GetPriceByQuantity(x));
+        
+        ShoppingCarts.ToList().ForEach(x => Order.Total += _service.GetPriceByQuantity(x));
         
     }
 

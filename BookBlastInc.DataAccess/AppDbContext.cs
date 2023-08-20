@@ -15,6 +15,7 @@ public class AppDbContext : IdentityDbContext<IdentityUser>
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         optionsBuilder.UseMySQL("server=localhost;database=bookblast;uid=root;pwd=andu404595;");
+        optionsBuilder.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -29,4 +30,5 @@ public class AppDbContext : IdentityDbContext<IdentityUser>
     public DbSet<Order> Orders { get; set; }
     public DbSet<BookAuthor> BookAuthors { get; set; }
     public DbSet<ShoppingCart> ShoppingCarts { get; set; }   
+    public DbSet<OrderBook> OrderBooks { get; set; }
 }
