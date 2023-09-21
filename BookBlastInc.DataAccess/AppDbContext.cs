@@ -31,4 +31,5 @@ public class AppDbContext : IdentityDbContext<IdentityUser>
     public DbSet<BookAuthor> BookAuthors { get; set; }
     public DbSet<ShoppingCart> ShoppingCarts { get; set; }   
     public DbSet<OrderBook> OrderBooks { get; set; }
+    public DbSet<BookOnLoan> BookOnLoans { get; set; }
 }

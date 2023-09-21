@@ -7,6 +7,5 @@ namespace BookBlastInc.DataAccess.Repositories;
 
 public interface IOrderRepository : IRepository<Order>
 {
-    void UpdateStatus(Guid id, Core.Enums.OrderStatus orderStatus, PaymentStatus? paymentStat = null);
-    void UpdatePayment(Guid id, string paymentId, string sessionId);
+
 }

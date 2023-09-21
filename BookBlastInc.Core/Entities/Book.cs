@@ -24,5 +24,6 @@ public class Book : BaseEntity
     public string CategoryName { get; set; }
     [NotMapped]
     public List<string>? AuthorNames { get; set; }
+    public decimal Deposit { get; set; }
     
 }

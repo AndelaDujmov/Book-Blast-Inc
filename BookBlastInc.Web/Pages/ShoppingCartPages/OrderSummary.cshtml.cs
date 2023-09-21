@@ -84,14 +84,16 @@ public class OrderSummary : PageModel
                 Quantity = cart.Count
             };
             options.LineItems.Add(sessionLineItem);
-        });
+        }
+        );
         
         var service = new SessionService();
         Session stripeSession = service.Create(options);
 
-        _service.UpdateStripePayment(id: Order.Id, sessionid: stripeSession.Id, paymentid: stripeSession.PaymentIntentId);
+        _service.UpdateStripePayment( Order, sessionid: stripeSession.Id, paymentid: stripeSession.PaymentIntentId);
         Response.Headers.Add("Location", stripeSession.Url);
 
         return new StatusCodeResult(303);
     }
+    
 }

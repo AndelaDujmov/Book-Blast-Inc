@@ -1,9 +1,9 @@
 using BookBlastInc.Application.Services;
 using BookBlastInc.Core.Enums;
+using iTextSharp.text;
+using iTextSharp.text.pdf;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Stripe.Checkout;
-using Stripe.FinancialConnections;
 using Session = Stripe.Checkout.Session;
 using SessionService = Stripe.Checkout.SessionService;
 
@@ -24,7 +24,7 @@ public class OrderConfirmation : PageModel
     public void OnGet(Guid id)
     {
         var orderStat = _service.GetOrderById(id);
-
+        
         if (orderStat.PaymentStatus != PaymentStatus.DELAYED)
         {
             var service = new SessionService();
@@ -32,11 +32,13 @@ public class OrderConfirmation : PageModel
 
             if (stripeSession.PaymentStatus.ToLower() == "paid")
             {
-                _service.UpdateStripePayment(id: id, sessionid: stripeSession.Id, paymentid: stripeSession.PaymentIntentId);
-                _service.UpdateOrderStatus(id, PaymentStatus.COMPLETED, OrderStatus.COMPLETED);
+                var order = _service.GetOrderById(id);
+                _service.UpdateStripePayment(order, sessionid: stripeSession.Id, paymentid: stripeSession.PaymentIntentId);
+                _service.UpdateOrderStatus(order, PaymentStatus.COMPLETED, OrderStatus.COMPLETED);
             }
         }
         
         OrderNumber = id;
     }
+    
 }

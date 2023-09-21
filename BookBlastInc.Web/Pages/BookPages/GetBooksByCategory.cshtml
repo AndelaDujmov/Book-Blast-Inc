@@ -2,31 +2,51 @@
 @using Microsoft.EntityFrameworkCore
 @model BookBlastInc.Web.Pages.BookPages.GetBooksByCategory
 
-<div class="row pb-3">
-    @foreach (var book in Model.Books)
-    {
-        <div class="col-lg-6 col-sm-6">
-            <div class="row p-2">
-                <div class="col-4 p-1">
-                    <div class="card border-0 shadow border-5 rounded">
-                        <img height="220px" width="160px" src="@book.PhotoUrl" class="card-img-top rounded" />
-                        <div class="card-body pb-0">
-                            <div class="p-1">
-                                <p class="card-title h5 text-dark opacity-75 text-uppercase text-center">@book.Name</p>
-                                <p class="card-title text-warning text-center">by @foreach (var aut in book.AuthorNames)
-                                                                                  {
-                                                                                      <b>@aut</b>
-                                                                                  }</p>
-                            </div>
-                            <div class="p-1">
-                                <p class="card-title h5 text-dark opacity-75 text-uppercase text-center">@book.Price.ToString("c")</p>
-                            </div>
-                        </div>
-                        <a  asp-page="/BookPages/BookDetails" asp-route-id="@book.Id" class="btn btn-primary mx-2">Details</a>
-                    </div>
-                </div>
-               
-            </div>
-        </div>
-    }
+<div class="row pb-5" style="margin-top: 52px;">
+     @foreach (var book in Model.Books)
+         {
+             <div class="col-lg-3 col-sm-6">
+                 <div class="row p-2">
+                     <div class="col-12 p-1">
+                         <div class="card border-0 p-3 shadow  border-top border-5 rounded" style=" height: 800px;
+                                                                                                           border: 1px solid #ccc;
+                                                                                                           padding: 10px;
+                                                                                                           margin: 5px;
+                                                                                                           overflow: hidden;"> 
+                             @if(book.PhotoUrl!=null && book.PhotoUrl.Count() > 0) {
+                                 <img src="@book.PhotoUrl" class="card-img-top rounded" style=" height: 530px;" />
+                             }
+                             else {
+                                 <img src="https://placehold.co/500x600/png" class="card-img-top rounded" />
+                             }
+                             
+                             <div class="card-body pb-0">
+                                 <div class="pl-1">
+                                     <p class="card-title h5 text-dark opacity-75 text-uppercase text-center">@book.Name</p>
+                                     <p class="card-title text-warning text-center">by @foreach (var author in book.AuthorNames)
+                                       {
+                                           <b>@author</b>
+                                       }
+                                 </div>
+                                 <div class="pl-1">
+                                     <p class="text-dark text-opacity-75 text-center">Price:
+                                         <span>
+                                             @string.Format("€{0:N2}",book.Price)
+                                         </span>
+                                         <br/><small><b>Deposit:</b> @string.Format("€{0:N2}",book.Deposit)</small>
+                                     </p>
+                                 </div>
+                             </div>
+                             <div>
+                                 <a asp-page="/BookPages/BookDetails"
+                                 asp-route-id="@book.Id"
+                                 class="btn btn-primary bg-gradient border-0 form-control">
+                                     Details
+                                 </a>
+                             </div>
+                         </div>
+                     </div>
+                 </div>
+             </div>
+         }
 </div>

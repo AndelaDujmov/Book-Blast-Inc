@@ -1,19 +1,25 @@
+using BookBlastInc.Application.Utils;
 using BookBlastInc.Core.Entities;
 using BookBlastInc.Core.Enums;
 using BookBlastInc.DataAccess.Repositories;
 using BookBlastInc.DataAccess.Repositories.Impl;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using MySqlX.XDevAPI;
+using Stripe;
 
 namespace BookBlastInc.Application.Services;
 
 public class BookService
 {
     private readonly IUnitOfWork _repository;
+    private readonly UserManager<IdentityUser> _userManager;
 
-    public BookService(IUnitOfWork repository)
+    public BookService(IUnitOfWork repository, UserManager<IdentityUser> userManager)
     {
         _repository = repository;
+        _userManager = userManager;
     }
 
     public void Add(Author author)
@@ -143,26 +149,26 @@ public class BookService
         return authorsList;
     }
 
-    public void AddToCart(string userId, int count, Guid bookId)
+    public void UpdateCart(ShoppingCart cartByDb)
     {
-        var shoppingCard = new ShoppingCart();
-        shoppingCard.BookId = bookId;
-        shoppingCard.UserId = userId;
-        shoppingCard.Count = count;
-
-        var cartByDb = _repository.ShoppingCartRepository.Get(cart => cart.UserId.Equals(userId) && cart.BookId.Equals(bookId));
-
-        if (cartByDb is not null)
-        {
-            cartByDb.Count += count;
-            _repository.ShoppingCartRepository.Update(cartByDb);
-        }
-        else
-        {
-            _repository.ShoppingCartRepository.Add(shoppingCard);
-        }
-        
+        _repository.ShoppingCartRepository.Update(cartByDb);
         _repository.ShoppingCartRepository.Save();
+    }
+
+    public void AddtoCart(ShoppingCart cardByDb)
+    {
+        _repository.ShoppingCartRepository.Add(cardByDb);
+        _repository.ShoppingCartRepository.Save();
+    }
+
+    public ShoppingCart GetShoppingCartIfExists(string userId, Guid bookId)
+    {
+        return _repository.ShoppingCartRepository.Get(cart => cart.UserId.Equals(userId) && cart.BookId.Equals(bookId));
+    }
+
+    public int GetNumberOfCardsByUser(string userId)
+    {
+        return _repository.ShoppingCartRepository.Get(u => u.UserId.Equals(userId)).Count;
     }
 
     public IEnumerable<ShoppingCart> GetAllPurchasesByUser(string userId)
@@ -193,6 +199,30 @@ public class BookService
         _repository.OrderRepository.Save();
     }
     
+    public IEnumerable<Order> GetAllOrders()
+    {
+        var orders = _repository.OrderRepository.GetAll();
+        
+        orders.ToList().ForEach(x => x.User = GetUserId(x.UserId));
+
+        return orders;
+    }
+
+    public Book GetBookById(Guid id)
+    {
+        return _repository.BookRepository.Get(x => x.Id.Equals(id));
+
+    }
+    
+    public IEnumerable<OrderBook> GetAllBooksByOrder(Guid id)
+    {
+        var booksPerOrder = _repository.BookOrderRepository.GetAll().Where(x => x.OrderId.Equals(id));
+        
+        booksPerOrder.ToList().ForEach(b => b.Book = GetBookById(b.BookId));
+
+        return booksPerOrder;
+    }
+    
     public void CreateOrderForBook(ShoppingCart el, Guid orderId)
     {
         var orderForBook = new OrderBook();
@@ -204,17 +234,36 @@ public class BookService
         _repository.BookOrderRepository.Save();
     }
 
-    public void UpdateOrderStatus(Guid id, PaymentStatus paymentStatus, OrderStatus orderStatus)
+    public void UpdateOrderStatus(Order order, PaymentStatus paymentStatus, OrderStatus orderStatus)
     {
-        _repository.OrderRepository.UpdateStatus(id, orderStatus, paymentStatus);
+        
+        if (order is not null)
+        {
+            order.OrderStatus = orderStatus;
+
+            if (paymentStatus != null)
+            {
+                order.PaymentStatus = paymentStatus;
+            }
+        }
+        _repository.OrderRepository.Update(order);
         _repository.OrderRepository.Save();
     }
-    public void UpdateStripePayment(Guid id, string sessionid, string paymentid)
+    public void UpdateStripePayment(Order order, string sessionid, string paymentid)
     {
-        _repository.OrderRepository.UpdatePayment(id, paymentid, sessionid);
-     
+        if (!string.IsNullOrEmpty(sessionid))
+        {
+            order.SessionId = sessionid; 
+        }
+        if (!string.IsNullOrEmpty(sessionid))
+        {
+            order.PaymentId = paymentid;
+        } 
+        
+        _repository.OrderRepository.Update(order);
+        _repository.SaveAll();
     }
-
+    
     public Order GetOrderById(Guid id)
     {
         return _repository.OrderRepository.Get(x => x.Id.Equals(id));
@@ -271,5 +320,156 @@ public class BookService
 
         _repository.ShoppingCartRepository.Delete(cart);
         _repository.ShoppingCartRepository.Save();
+    }
+
+    public BookOnLoan LoanABook(Guid bookId, string userId)
+    {
+        var bookLoan = new BookOnLoan();
+        bookLoan.BookId = bookId;
+        bookLoan.UserId = userId; ;
+        bookLoan.DateOfBorrowing = DateTime.Now;
+        bookLoan.LoanStatus = LoanStatus.OnLoan;
+        bookLoan.ReturnDate = bookLoan.DateOfBorrowing.AddMonths(1);
+        
+        _repository.BookLoanReopsitory.Add(bookLoan);
+        _repository.BookLoanReopsitory.Save();
+
+        return bookLoan;
+    }
+
+    public IEnumerable<BookOnLoan>? GetLoans(string? userId)
+    {
+        var allLoans = _repository.BookLoanReopsitory.GetAll().Where(x => x.UserId.Equals(userId));
+
+        if (allLoans != null)
+        {
+
+            allLoans.ToList().ForEach(a =>
+            {
+                a.User = GetUserId(a.UserId);
+                a.Book = GetBookById((Guid)a.BookId);
+            });
+        }
+
+        return allLoans;
+    }
+    
+    public void UpdateOrder(Order orderDetail)
+    {
+        var order = GetOrderById(orderDetail.Id);
+        order.Name = orderDetail.Name;
+        order.PhoneNumber = orderDetail.PhoneNumber;
+        order.StreetAddress = orderDetail.StreetAddress;
+        order.City = orderDetail.City;
+        order.Country = orderDetail.Country;
+        order.PostalCode = orderDetail.PostalCode;
+        
+        _repository.OrderRepository.Update(order);
+        _repository.SaveAll();
+    }
+
+    public IEnumerable<Order> GetOrdersByUser(string id)
+    {
+        var ordersByUser = _repository.OrderRepository.GetAll()
+                                                      .Where(x => x.UserId.Equals(id));
+
+        if (ordersByUser != null || !ordersByUser.Any())
+        {
+            ordersByUser.ToList().ForEach(o => o.User = GetUserId(o.UserId));
+        }
+
+        return ordersByUser;
+    }
+
+    public IEnumerable<BookOnLoan> GetAllLoans()
+    {
+        var loans = _repository.BookLoanReopsitory.GetAll();
+        
+        loans.ToList().ForEach(l =>
+        {
+            l.Book = GetBookById((Guid)l.BookId);
+            l.User = GetUserId(l.UserId);
+        });
+
+        return loans;
+    }
+
+    public BookOnLoan GetBookOnLoanById(Guid id)
+    {
+        var bookLoan = _repository.BookLoanReopsitory.Get(x => x.Id.Equals(id));
+
+        bookLoan.User = GetUserId(bookLoan.UserId);
+        bookLoan.Book = GetBookById((Guid)bookLoan.BookId);
+
+        return bookLoan;
+    }
+
+    public void UpdateLoanStatus(BookOnLoan bookOnLoan)
+    {
+        bookOnLoan.Book = GetBookById((Guid)bookOnLoan.BookId);
+        
+        if (bookOnLoan.LoanStatus.Equals(LoanStatus.Returned))
+        {
+            var options = new RefundCreateOptions
+            {
+                Reason = RefundReasons.RequestedByCustomer,
+                PaymentIntent = bookOnLoan.PaymentId,
+                Amount = (bookOnLoan.ReturnDate < DateTime.Now) ? (long?)(bookOnLoan.Book.Deposit / 2) : 
+                    (long?)bookOnLoan.Book.Deposit
+            };
+
+            var refundService = new RefundService();
+            var refund = refundService.Create(options);
+        }
+        
+        
+        _repository.BookLoanReopsitory.Update(bookOnLoan);
+        _repository.SaveAll();
+    }
+
+    public void UpdateStripeDeposit(BookOnLoan book, string paymentId, string sessionId)
+    {
+        if (!string.IsNullOrEmpty(sessionId))
+        {
+            book.SessionId = sessionId;
+            book.PaymentId = paymentId;
+        }
+        
+        _repository.BookLoanReopsitory.Update(book);
+        _repository.SaveAll();
+    }
+
+    public IEnumerable<ApplicationUser>? GetAllUsers(string id)
+    {
+        var users = _repository.UserRepository.GetAll();
+
+        if (users is not null)
+        {
+            users = users.Where(x => !x.Id.Equals(id));
+            users.ToList().ForEach(u => u.Role = CheckIfUserInRole(u.Id));
+        }
+
+        return users;
+    }
+
+    public IEnumerable<ApplicationUser>? GetAllClients()
+    {
+        var users = _repository.UserRepository.GetAll();
+     
+
+        if (users is not null)
+        {
+            users.ToList().ForEach(u => u.Role = CheckIfUserInRole(u.Id));
+            users = users.Where(x => x.Role.Equals(RoleName.User.ToString()));
+        }
+
+        return users;
+    }
+    
+    private string CheckIfUserInRole(string userId)
+    {
+        var role = _repository.UserRepository.GetRoleByUser(userId);
+
+        return role;
     }
 }

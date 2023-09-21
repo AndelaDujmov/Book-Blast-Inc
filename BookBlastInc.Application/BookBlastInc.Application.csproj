@@ -11,4 +11,11 @@
     </ItemGroup>
 
 
+
+    <ItemGroup>
+      <Reference Include="Stripe.net">
+        <HintPath>..\..\..\.nuget\packages\stripe.net\41.9.0\lib\net6.0\Stripe.net.dll</HintPath>
+      </Reference>
+    </ItemGroup>
+
 </Project>

@@ -1,6 +1,7 @@
 using BookBlastInc.Application.Services;
 using BookBlastInc.Application.Settings;
 using BookBlastInc.DataAccess;
+using BookBlastInc.DataAccess.DbInitalizer;
 using BookBlastInc.DataAccess.Repositories;
 using BookBlastInc.DataAccess.Repositories.Impl;
 using Microsoft.EntityFrameworkCore;
@@ -15,7 +16,7 @@ builder.Services.AddRazorPages();
 
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
-    options.UseMySQL("server=localhost;database=bookblast;uid=root;pwd=andu404595;");
+    options.UseMySQL("server=localhost;database=bookblastinc;uid=root;pwd=andu404595;");
     options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
 });
 
@@ -24,9 +25,23 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = false)
     .AddEntityFrameworkStores<AppDbContext>().AddDefaultTokenProviders();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-builder.Services.AddTransient<CategoryService>();
-builder.Services.AddTransient<BookService>();
+builder.Services.AddScoped<CategoryService>();
+builder.Services.AddScoped<BookService>();
+builder.Services.AddScoped<IDbInitializer, DbInitializer>();
 
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.LoginPath = $"/Identity/Account/Login";
+    options.LogoutPath = $"/Identity/Account/Logout";
+});
+
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(60);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
 
 var app = builder.Build();
 
@@ -41,10 +56,21 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 StripeConfiguration.ApiKey = builder.Configuration.GetSection("Stripe:SecretKey").Get<string>();
+SeedDb();
 app.UseRouting();
-app.UseAuthentication();;
+app.UseAuthentication();
+app.UseSession();
 app.UseAuthorization();
 
 app.MapRazorPages();
 
 app.Run();
+
+void SeedDb()
+{
+    using (var scope = app.Services.CreateScope())
+    {
+        var dbInit = scope.ServiceProvider.GetRequiredService<IDbInitializer>();
+        dbInit.Initialize();
+    }
+}

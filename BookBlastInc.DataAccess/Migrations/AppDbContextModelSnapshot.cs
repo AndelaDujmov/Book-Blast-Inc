@@ -51,6 +51,9 @@ namespace BookBlastInc.DataAccess.Migrations
                     b.Property<Guid?>("CategoryId")
                         .HasColumnType("char(36)");
 
+                    b.Property<decimal>("Deposit")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("longtext");
@@ -90,6 +93,43 @@ namespace BookBlastInc.DataAccess.Migrations
                     b.HasIndex("BookId");
 
                     b.ToTable("BookAuthors");
+                });
+
+            modelBuilder.Entity("BookBlastInc.Core.Entities.BookOnLoan", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<Guid?>("BookId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<DateTime>("DateOfBorrowing")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int>("LoanStatus")
+                        .HasColumnType("int");
+
+                    b.Property<string>("PaymentId")
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime?>("ReturnDate")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("SessionId")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BookId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("BookOnLoans");
                 });
 
             modelBuilder.Entity("BookBlastInc.Core.Entities.Category", b =>
@@ -474,6 +514,23 @@ namespace BookBlastInc.DataAccess.Migrations
                     b.Navigation("Author");
 
                     b.Navigation("Book");
+                });
+
+            modelBuilder.Entity("BookBlastInc.Core.Entities.BookOnLoan", b =>
+                {
+                    b.HasOne("BookBlastInc.Core.Entities.Book", "Book")
+                        .WithMany()
+                        .HasForeignKey("BookId");
+
+                    b.HasOne("BookBlastInc.Core.Entities.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Book");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("BookBlastInc.Core.Entities.Order", b =>

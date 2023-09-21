@@ -1,0 +1,72 @@
+@page
+@using BookBlastInc.Core.Enums
+@model BookBlastInc.Web.Pages.LoanPages.EditStatus
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Loan Info</title>
+    <style>
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    margin: 0;
+    padding: 0;
+  }
+  .container {
+    max-width: 800px;
+    margin: 40px auto;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  h1 {
+    color: #333;
+  }
+  p {
+    color: #555;
+  }
+  .book-info {
+    margin-top: 20px;
+    border-top: 1px solid #ccc;
+    padding-top: 20px;
+  }
+</style>
+</head>
+<body>
+<div class="container" style="margin-top: 32px;">
+  <form method="post">
+  <input asp-for="BookOnLoan.Id" hidden/>
+  <h1>Book Loan Information</h1>
+  <p>This page provides information about the book loan.</p>
+
+  <div class="book-info">
+    <h2>Book Details</h2>
+    <p><strong>Title: @Model.BookOnLoan.Book.Name</strong></p>
+  </div>
+
+  <div class="book-info">
+    <h2>Borrower Details</h2>
+    <p><strong>Name:</strong> @(Model.BookOnLoan.User.FirstName + " " + Model.BookOnLoan.User.LastName)</p>
+    <p><strong>Email:</strong> @Model.BookOnLoan.User.Email</p>
+    <p><strong>Due Date:</strong> @Model.BookOnLoan.ReturnDate</p>
+  </div>
+
+  <div class="book-info">
+    <h2>Change status of the book</h2>
+    
+
+    <select class="form-select" asp-items="@Html.GetEnumSelectList<LoanStatus>()" asp-for="BookOnLoan.LoanStatus">
+      <option id="select" disabled selected value="">Please select one of the above</option>
+    </select>
+    <button type="submit" class="btn btn-primary" @*value="@Model.BookOnLoan.LoanStatus"*@ style="width: 100px">Submit</button>
+
+  </div>
+  </form>
+</div>
+
+</body>
+</html>

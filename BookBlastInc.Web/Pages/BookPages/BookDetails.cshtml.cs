@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using BookBlastInc.Application.Services;
+using BookBlastInc.Application.Utils;
 using BookBlastInc.Core.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -28,11 +29,8 @@ public class BookDetails : PageModel
     {
         Book = _bookService.GetBook(id);
         
-        if (!User.Identity.IsAuthenticated)
-            RedirectToRoute("/Identity/Account/Login");
-        
         return Page();
-      }
+    }
     
     [Authorize]
     [HttpPost]
@@ -40,9 +38,26 @@ public class BookDetails : PageModel
     {
         var claimsIdentity = (ClaimsIdentity)User.Identity;
         
-        _bookService.AddToCart(userId:claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value,
-            count:Count, bookId:Book.Id);
-        
-        return RedirectToPage("AllBooks");
+        var shoppingCard = new ShoppingCart();
+        shoppingCard.BookId = Book.Id;
+        shoppingCard.UserId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
+        shoppingCard.Count = Count;
+
+        var cartByDb =
+            _bookService.GetShoppingCartIfExists(userId: claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value,
+                bookId: Book.Id);
+
+        if (cartByDb is not null)
+        {
+            cartByDb.Count += Count;
+            _bookService.UpdateCart(cartByDb);
+        }
+        else
+        {
+            _bookService.AddtoCart(shoppingCard);
+        }
+
+        return RedirectToPage("BookDetails", new { id = Book.Id });
     }
+    
 }

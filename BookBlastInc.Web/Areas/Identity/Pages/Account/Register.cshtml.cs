@@ -124,17 +124,13 @@ namespace BookBlastInc.Web.Areas.Identity.Pages.Account
 
         public async Task OnGetAsync(string returnUrl = null)
         {
-            if (!_roleManager.RoleExistsAsync(RoleName.Administrator.ToString()).GetAwaiter().GetResult()) 
-                _roleManager.CreateAsync(new IdentityRole(RoleName.Administrator.ToString())).GetAwaiter().GetResult();
-            if (!_roleManager.RoleExistsAsync(RoleName.User.ToString()).GetAwaiter().GetResult()) 
-                _roleManager.CreateAsync(new IdentityRole(RoleName.User.ToString())).GetAwaiter().GetResult();
-
+           
             Input = new()
             {
                 RoleList = _roleManager.Roles.Where(role => !role.Name.Equals(RoleName.Administrator.ToString())).Select(role => role.Name).Select(item => new SelectListItem
                 {
-                    Value = item,
-                    Text = item
+                    Value = item.ToString(),
+                    Text = item.ToString()
                 })
             };
             
@@ -159,12 +155,16 @@ namespace BookBlastInc.Web.Areas.Identity.Pages.Account
                 user.Deleted = false;
                 var result = await _userManager.CreateAsync(user, Input.Password);
 
-                await _userManager.AddToRoleAsync(user, RoleName.User.ToString());
+                await _userManager.AddToRoleAsync(user, RoleName.Employee.ToString());
                 
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User created a new account with password.");
 
+                    
+                    var text = RoleName.Employee.ToString();
+
+                    await _userManager.AddToRoleAsync(user: user, role: text);
                     var userId = await _userManager.GetUserIdAsync(user);
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
@@ -183,7 +183,13 @@ namespace BookBlastInc.Web.Areas.Identity.Pages.Account
                     }
                     else
                     {
-                        await _signInManager.SignInAsync(user, isPersistent: false);
+                        
+                        if (!User.IsInRole(RoleName.Administrator.ToString()))
+                        {
+                            await _signInManager.SignInAsync(user, isPersistent: false);
+                        }
+                            
+                       
                         return LocalRedirect(returnUrl);
                     }
                 }

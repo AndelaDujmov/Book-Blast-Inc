@@ -22,6 +22,7 @@
 
     <ItemGroup>
       <PackageReference Include="bootstrap.chosen" Version="1.0.0" />
+      <PackageReference Include="iTextSharp" Version="5.5.13.3" />
       <PackageReference Include="JSON" Version="1.0.1" />
       <PackageReference Include="Json.Net" Version="1.0.33" />
       <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.18" />
@@ -121,7 +122,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Areas\Identity\Data\" />
       <Folder Include="wwwroot\books\" />
     </ItemGroup>
 

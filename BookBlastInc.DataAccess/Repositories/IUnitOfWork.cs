@@ -10,4 +10,6 @@ public interface IUnitOfWork
     IUserRepository UserRepository { get; }
     IOrderRepository OrderRepository { get; }
     IBookOrderRepository BookOrderRepository { get; }
+    IBookLoanReopsitory BookLoanReopsitory { get; }
+    void SaveAll();
 }

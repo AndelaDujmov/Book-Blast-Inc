@@ -1,7 +1,7 @@
 @page
 @model BookBlastInc.Web.Pages.ShoppingCartPages.Index
 
-<form method="post">
+<form method="post" style="margin-top: 32px;">
     <br />
     <div class="card shadow border-0">
         <div class="card-header bg-secondary bg-gradient text-light ml-0 py-4">
@@ -19,7 +19,7 @@
             </div>
             <div class="row mb-3 pb-3">
                 <div class="col-md-2 offset-md-1">
-                    <a  class="btn btn-outline-primary text-uppercase mb-5 btn-sm"><small>Continue Shopping</small></a>
+                    <a href="https://localhost:7089" class="btn btn-outline-primary text-uppercase mb-5 btn-sm"><small>Continue Shopping</small></a>
                 </div>
                 <div class="col-md-10 offset-md-1">
 
@@ -40,7 +40,7 @@
                         <div class="col-12  col-lg-5 text-center row">
                             <div class="col-3 text-md-right pt-2 pt-md-4">
                                 <h6 class="fw-semibold">
-                                        @item.Book.Price.ToString("c")
+                                        @string.Format("€{0:N2}", item.Book.Price)
                                     <span class="text-muted">&nbsp;x&nbsp;</span>@item.Count
                                 </h6>
                             </div>
@@ -75,7 +75,7 @@
                         <ul class="list-group mb-4">
                             <li class="d-flex justify-content-between align-items-center">
                                 <h5 class="text-dark fw-semibold text-uppercase"> Total (USD)</h5>
-                                <h4 class="text-dark fw-bolder">@Model.Order.Total.ToString("c")</h4>
+                                <h4 class="text-dark fw-bolder">@string.Format("€{0:N2}",Model.Order.Total)</h4>
                             </li>
                         </ul>
                     </div>

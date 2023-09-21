@@ -1,0 +1,201 @@
+@page
+@using BookBlastInc.Core.Enums
+@model BookBlastInc.Web.Pages.ShoppingCartPages.OrderDetails
+
+<form method="post" style="margin-top: 92px;">
+    <input asp-for="OrderDetail.Id" hidden />
+    <br />
+    <div class="container">
+        <div class="card">
+            <div class="card-header bg-light text-dark ml-0">
+                <div class="container row">
+                    <div class="col-12 d-none d-md-block col-md-6 pb-1">
+                        <i class="fas fa-shopping-cart"></i> &nbsp; Order Summary
+                    </div>
+                    <div class="col-12 col-md-4 offset-md-2 text-right">
+                        <a asp-page="./OrderManagement" class="btn btn-outline-info form-control btn-sm">Back to Orders</a>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="container rounded p-2">
+                    <div class="row">
+                        <div class="col-12 col-lg-6 pb-4">
+                            <div class="row">
+                                <h4 class="d-flex justify-content-between align-items-center mb-3">
+                                    <span class="text-primary">PickUp Details:</span>
+                                </h4>
+                            </div>
+                            <div class="row my-1">
+                                <div class="col-3">Name</div>
+                                <div class="col-9">
+                                    @if (User.IsInRole(RoleName.Administrator.ToString()) || User.IsInRole(RoleName.Employee.ToString())) {
+                                        <input asp-for="OrderDetail.Name" type="text" class="form-control" />
+                                        <span asp-validation-for="OrderDetail.Name" class="text-danger"></span>
+                                    }
+                                    else {
+                                        <input asp-for="OrderDetail.Name" readonly type="text" class="form-control" />
+                                    }
+
+                                </div>
+                            </div>
+                            <div class="row my-1">
+                                <div class="col-3">Phone</div>
+                                <div class="col-9">
+                                    @if (User.IsInRole(RoleName.Administrator.ToString()) || User.IsInRole(RoleName.Employee.ToString()))  {
+                                        <input asp-for="OrderDetail.PhoneNumber" type="text" class="form-control" />
+                                        <span asp-validation-for="OrderDetail.PhoneNumber" class="text-danger"></span>
+                                    }
+                                    else {
+                                        <input asp-for="OrderDetail.PhoneNumber" readonly type="text" class="form-control" />
+                                    }
+                                </div>
+                            </div>
+                            <div class="row my-1">
+                                <div class="col-3">Address</div>
+                                <div class="col-9">
+                                    @if (User.IsInRole(RoleName.Administrator.ToString()) || User.IsInRole(RoleName.Employee.ToString())) {
+                                        <input asp-for="OrderDetail.StreetAddress" type="text" class="form-control" />
+                                        <span asp-validation-for="OrderDetail.StreetAddress" class="text-danger"></span>
+                                    }
+                                    else {
+                                        <input asp-for="OrderDetail.StreetAddress" readonly type="text" class="form-control" />
+                                    }
+                                </div>
+                            </div>
+                            <div class="row my-1">
+                                <div class="col-3">City</div>
+                                <div class="col-9">
+                                    @if (User.IsInRole(RoleName.Administrator.ToString()) || User.IsInRole(RoleName.Employee.ToString())) {
+                                        <input asp-for="OrderDetail.City" type="text" class="form-control" />
+                                        <span asp-validation-for="OrderDetail.City" class="text-danger"></span>
+                                    }
+                                    else {
+                                        <input asp-for="OrderDetail.City" readonly type="text" class="form-control" />
+                                    }
+                                </div>
+                            </div>
+                            <div class="row my-1">
+                                <div class="col-3">State</div>
+                                <div class="col-9">
+                                   @if (User.IsInRole(RoleName.Administrator.ToString()) || User.IsInRole(RoleName.Employee.ToString())) {
+                                        <input asp-for="OrderDetail.Country" type="text" class="form-control" />
+                                        <span asp-validation-for="OrderDetail.Country" class="text-danger"></span>
+                                    }
+                                    else {
+                                        <input asp-for="OrderDetail.Country" readonly type="text" class="form-control" />
+                                    }
+                                </div>
+                            </div>
+                            <div class="row my-1">
+                                <div class="col-3">Zip Code</div>
+                                <div class="col-9">
+                                    @if (User.IsInRole(RoleName.Administrator.ToString()) || User.IsInRole(RoleName.Employee.ToString())) {
+                                        <input asp-for="OrderDetail.PostalCode" type="text" class="form-control" />
+                                        <span asp-validation-for="OrderDetail.PostalCode" class="text-danger"></span>
+                                    }
+                                    else {
+                                        <input asp-for="OrderDetail.PostalCode" readonly type="text" class="form-control" />
+                                    }
+                                </div>
+                            </div>
+                            <div class="row my-1">
+                                <div class="col-3">Email</div>
+                                <div class="col-9">
+                                    <input asp-for="OrderDetail.User.Email" readonly type="text" class="form-control" />
+                                </div>
+                            </div>
+                            <div class="row my-1">
+                                <div class="col-3">Order Date</div>
+                                <div class="col-9">
+                                    <input value="@Model.OrderDetail.OrderDate.ToShortDateString()" readonly type="text" class="form-control" />
+                                </div>
+                            </div>
+                          
+                            @if (User.IsInRole(RoleName.Administrator.ToString()) @*|| User.IsInRole(SD.Role_Employee)*@) {
+                                <div class="row my-1">
+                                    <div class="col-3">Session ID</div>
+                                    <div class="col-9">
+
+                                        <input asp-for="OrderDetail.SessionId" readonly type="text" class="form-control" />
+
+                                    </div>
+                                </div>
+                                <div class="row my-1">
+                                    <div class="col-3">Payment ID</div>
+                                    <div class="col-9">
+
+                                        <input asp-for="OrderDetail.PaymentId" readonly type="text" class="form-control" />
+
+                                    </div>
+                                </div>
+                            }
+                            <div class="row my-1">
+                                <div class="col-3">Payment Status</div>
+                                <div class="col-9">
+                                    <input asp-for="OrderDetail.PaymentStatus" readonly type="text" class="form-control" />
+                                </div>
+                            </div>
+                            @if (User.IsInRole(RoleName.Administrator.ToString()) || User.IsInRole(RoleName.Employee.ToString())) {
+                                <button type="submit" asp-page-handler="update" class="btn btn-warning form-control my-1">Update Order Details</button>
+                            }
+                        </div>
+                        <div class="col-12 col-lg-5 offset-lg-1">
+                            <h4 class="d-flex justify-content-between align-items-center mb-3">
+                                <span class="text-primary">Order Summary</span>
+                            </h4>
+                            <label class="btn btn-outline-primary form-control my-2">Order Status - @Model.OrderDetail.OrderStatus</label>
+
+                            <ul class="list-group mb-3">
+                                @foreach (var detail in Model.OrderBook) {
+                                    <li class="list-group-item d-flex justify-content-between p-2">
+                                        <div class="row container">
+                                            <div class="col-8">
+
+                                                <h6 class="my-0 text-primary">@detail.Book.Name</h6>
+                                                <small class="text-muted">Price : @string.Format("€{0:N2}", detail.Price)</small><br />
+                                                <small class="text-muted">Quantity : @detail.Count</small>
+                                            </div>
+                                            <div class="col-4 text-end">
+                                                <p class="text-success">@(string.Format("€{0:N2}", detail.Count * detail.Price))</p>
+                                            </div>
+                                        </div>
+                                    </li>
+                                }
+                                <li class="list-group-item bg-primary">
+                                    <div class="row container">
+                                        <div class="col-6">
+                                            <h5 class="text-white">TOTAL </h5>
+                                        </div>
+                                        <div class="col-6 text-end">
+                                            <h5 class="text-white">@string.Format("€{0:N2}", Model.OrderDetail.Total)</h5>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                            
+                            @if (User.IsInRole(RoleName.Administrator.ToString()) || User.IsInRole(RoleName.Employee.ToString())) {
+                               
+                                @if (Model.OrderDetail.OrderStatus == OrderStatus.COMPLETED) {
+                                    <a asp-page-handler="ship" asp-route-id="@Model.OrderDetail.Id" class="btn btn-primary form-control my-1">
+                                       Ship
+                                    </a> 
+                                }
+
+                              
+                            }
+                          @if (Model.OrderDetail.OrderStatus != OrderStatus.SHIPPED &&
+                           Model.OrderDetail.OrderStatus != OrderStatus.CANCELLED) {
+                               <a asp-page-handler="cancel" asp-route-id="@Model.OrderDetail.Id" class="btn btn-danger form-control my-1">
+                                   Cancel
+                               </a>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+

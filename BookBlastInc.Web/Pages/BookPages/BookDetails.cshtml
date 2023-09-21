@@ -1,10 +1,10 @@
 @page
 @using BookBlastInc.Core.Entities
+@using BookBlastInc.Core.Enums
 @model BookBlastInc.Web.Pages.BookPages.BookDetails
 
 
-
-<style>
+<style xmlns="http://www.w3.org/1999/html">
     body{
         margin-top:20px;
         background:#eee;
@@ -317,7 +317,7 @@
 
 
 
-<form method="post">
+<form method="post" style="margin-top: 92px;">
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" />
 <div class="container">
     <!-- product -->
@@ -326,13 +326,7 @@
             <div class="col-md-5 col-sm-12 col-xs-12">
                 <div class="product-image">
                     <div id="myCarousel-2" class="carousel slide">
-                        <ol class="carousel-indicators">
-                            <li data-target="#myCarousel-2" data-slide-to="0" class=""></li>
-                            <li data-target="#myCarousel-2" data-slide-to="1" class="active"></li>
-                            <li data-target="#myCarousel-2" data-slide-to="2" class=""></li>
-                        </ol>
                         <div class="carousel-inner">
-                            <!-- Slide 1 -->
                             <div class="item active">
                                 <img src="@Model.Book.PhotoUrl" width="100%" class="img-responsive" alt="" />
                             </div>
@@ -346,28 +340,22 @@
             <div class="col-md-6 col-md-offset-1 col-sm-12 col-xs-12">
                 <h2 class="name">
                     @Model.Book.Name
-                    <small>Product by <a href="javascript:void(0);">@foreach (var author in Model.Book.AuthorNames)
+                    <small>Written by <a href="javascript:void(0);">@foreach (var author in Model.Book.AuthorNames)
                                                                     {
                                                                         <b>@author</b>
                                                                     }</a></small>
-                    <i class="fa fa-star fa-2x text-primary"></i>
-                    <i class="fa fa-star fa-2x text-primary"></i>
-                    <i class="fa fa-star fa-2x text-primary"></i>
-                    <i class="fa fa-star fa-2x text-primary"></i>
-                    <i class="fa fa-star fa-2x text-muted"></i>
                 </h2>
                 <hr />
                 <h3 class="price-container">
-                    @Model.Book.Price.ToString("C")
-                    <small>*includes tax</small>
+                    @string.Format("€{0:N2}",Model.Book.Price)
                 </h3>
                 <div class="certified">
                     <ul>
                         <li>
-                            <a href="javascript:void(0);">Delivery time<span>7 Working Days</span></a>
+                            <a href="javascript:void(0);">Rent Info<span><b>Deposit:</b> @string.Format("€{0:N2}",Model.Book.Deposit)</span></a>
                         </li>
                         <li>
-                            <a href="javascript:void(0);">Certified<span>Quality Assured</span></a>
+                            <a href="javascript:void(0);">Deposit<span>Refundable, return in span of 28 working days.</span></a>
                         </li>
                     </ul>
                 </div>
@@ -400,18 +388,29 @@
                             </span>
                             <input asp-for="Count" type="number" value="1" class="form-control text-end"
                                    aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" />
-
+ 
                         </div>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-12 col-md-6 pb-1">
-                        <button type="submit"
-                                class="btn btn-primary bg-gradient  w-100 py-2 text-uppercase fw-semibold">
-                            Add to Cart 
-                        </button>
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <div class="row">
+                        <div class="col-12 col-md-6 pb-1">
+                            <button type="submit"
+                                    class="btn btn-primary bg-gradient  w-100 py-2 text-uppercase fw-semibold">
+                                Add to Cart
+                            </button>&nbsp;
+                            <a
+                                class="btn btn-primary bg-gradient  w-100 py-2 text-uppercase fw-semibold" asp-page="/LoanPages/GetTheLoan" asp-route-BookId="@Model.Book.Id">
+                                Rent
+                            </a>
+                        </div>
                     </div>
-                </div>
+                }
+                else
+                {
+                    <p class="message-text">To be able to purchase a book you have to log in.</p>
+                }
             </div>
         </div>
     </div>
@@ -419,19 +418,3 @@
 </div>
 </form>
 
-@section Scripts{
-    <script>
-        tinymce.init({
-          selector: 'textarea',
-          plugins: 'ai tinycomments mentions anchor autolink charmap codesample emoticons link lists media searchreplace table visualblocks wordcount checklist mediaembed casechange export formatpainter pageembed permanentpen footnotes advtemplate advtable advcode  mergetags powerpaste tinymcespellchecker autocorrect a11ychecker typography inlinecss',
-        
-          tinycomments_mode: 'embedded',
-          tinycomments_author: 'Author name',
-          mergetags_list: [
-            { value: 'First.Name', title: 'First Name' },
-            { value: 'Email', title: 'Email' },
-          ],
-          ai_request: (request, respondWith) => respondWith.string(() => Promise.reject("See docs to implement AI Assistant"))
-        });
-      </script>
-}

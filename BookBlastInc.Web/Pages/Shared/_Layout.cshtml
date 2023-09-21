@@ -1,4 +1,8 @@
-﻿
+﻿@using Microsoft.AspNetCore.Http
+@using BookBlastInc.Application.Utils
+@using BookBlastInc.Core.Enums
+@inject IHttpContextAccessor HttpContextAccessor
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -35,7 +39,7 @@
 
 <nav class="navbar navbar-expand-lg bg-light" data-bs-theme="dark" style=" position: fixed; width:100%;top: 0px; margin-bottom: 1320px;">
     <div class="container-fluid">
-        <a class="navbar-brand" href="#">Book Blast Ink</a>
+        <a class="navbar-brand" href="https://localhost:7089/">Book Blast Ink</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor03" aria-controls="navbarColor03" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -47,28 +51,34 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" asp-page="BookPages/AllBooks">All Books</a>
+                     <a class="nav-link" asp-page="/CategoryPages/Categories">All Books</a>
+                </li>
+               
+                @if (User.IsInRole(RoleName.Administrator.ToString()) || User.IsInRole(RoleName.Employee.ToString()))
+                {
+                    <li class="nav-item">
+                        <a class="nav-link" asp-page="/BookPages/AllBooks">All Books</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-area="Identity" asp-page="/Account/Register">Register new user</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-page="/UsersPage/AllUsers">Users</a>
+                    </li>
+                }
+                <li class="nav-item">
+                    <a class="nav-link" asp-page="/LoanPages/Index">Loans</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#"></a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">About</a>
-                </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Dropdown</a>
-                    <div class="dropdown-menu">
-                        <a class="dropdown-item" href="#">Action</a>
-                        <a class="dropdown-item" href="#">Another action</a>
-                        <a class="dropdown-item" href="#">Something else here</a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="#">Separated link</a>
-                    </div>
+                   <a class="nav-link" asp-page="/ShoppingCartPages/OrderManagement">Orders</a>
                 </li>
             </ul>
-            <li style="list-style-type: none" class="nav-item">
-                <a class="nav-link" asp-page="/ShoppingCartPages/Index"><i class="bi bi-cart"></i>&nbsp; (0)</a>
-            </li>
+            @if(User.Identity.IsAuthenticated){
+                <li style="list-style-type: none" class="nav-item">
+                    <a class="nav-link" asp-page="/ShoppingCartPages/Index"><i class="bi bi-cart"></i>&nbsp;</a>
+                </li>
+            }
+          
         </div>
     </div>
     <partial name="_LoginPartial"/>

@@ -10,8 +10,15 @@ public class UnitOfWork : IUnitOfWork
     public IShoppingCartRepository ShoppingCartRepository { get; private set; }
 
     public IUserRepository UserRepository { get; private set; }
-    public IOrderRepository OrderRepository { get; }
-    public IBookOrderRepository BookOrderRepository { get; }
+    public IOrderRepository OrderRepository { get; private set; }
+    public IBookOrderRepository BookOrderRepository { get; private set; }
+    public IBookLoanReopsitory BookLoanReopsitory { get; private set; }
+
+
+    public void SaveAll()
+    {
+            _dbContext.SaveChanges();
+    }
 
     public UnitOfWork(AppDbContext appDbContext)
     {
@@ -24,5 +31,6 @@ public class UnitOfWork : IUnitOfWork
         UserRepository = new UserRepository(_dbContext);
         OrderRepository = new OrderRepository(_dbContext);
         BookOrderRepository = new BookOrderRepository(_dbContext);
+        BookLoanReopsitory = new BookLoanRepository(_dbContext);
     }
 }

@@ -8,17 +8,17 @@
 
 <h1>@ViewData["Title"]</h1>
 
-<div class="row">
+<div class="row" style="margin-top: 32px;">
     <div class="col-md-4">
         <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
-           @* @if (User.IsInRole(RoleName.Administrator.ToString()))
+            @if (User.IsInRole(RoleName.Administrator.ToString()))
             {
                 <h2>Create a new account - ADMIN PAGE</h2>
             }
             else
             {
                 <h2>Create a new account</h2>
-            }*@
+            }
             <hr/>
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
            
@@ -62,14 +62,6 @@
                 <label asp-for="Input.ConfirmPassword"></label>
                 <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
             </div>
-          @*  @if (User.IsInRole(RoleName.Administrator.ToString()))
-            {
-                <div class="form-floating">
-                    <select asp-for="Input.Role" asp-items="@Model.Input.RoleList" class="form-select">
-                        <option id="select" selected value="">--Select user function--</option>
-                    </select>
-                </div>
-            }*@
             <button id="registerSubmit" type="submit" class="w-100 btn btn-lg btn-primary">Register</button>
         </form>
     </div>

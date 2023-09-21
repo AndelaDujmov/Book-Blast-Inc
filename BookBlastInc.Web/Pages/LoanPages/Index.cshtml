@@ -1,0 +1,57 @@
+@page
+@using BookBlastInc.Core.Enums
+@model BookBlastInc.Web.Pages.LoanPages.Index
+@{
+    Layout = "Shared/_Layout";
+}
+
+
+<form method="post" style="margin-top:152px;">
+        <div class="border p-3  mt-4">
+            <div class="row pb-2">
+                <h2 class="text-primary">Book Loans</h2>
+                <hr/>
+            </div>
+            @if (!@Model.BooksOnLoans.Equals(null))
+            {
+                <table class="table text-secondary table-bordered">
+                    <thead class="thead-dark text-secondary" style="background-color: lightblue; text-overline-color: white; color: white">
+                    <th>ID</th>
+                    <th><a asp-page="OrderManagement" asp-route-sortOrder="@ViewData["NameSortParm"]">Name</a></th>
+                    <th>Date Of Borrowing</th>
+                    <th>User</th>
+                    <th>Status</th>
+                    <th>Date To Return</th>
+                    <th></th>
+                    </thead>
+                    <tbody>
+                    @foreach (var element in @Model.BooksOnLoans)
+                    {
+                        <tr>
+                            <td>@element.Id</td>
+                            <td>@element.Book.Name</td> &nbsp;&nbsp;&nbsp;
+                            <td>@element.DateOfBorrowing.ToString("MMM dd, yyyy")</td>
+                            <td>@(element.User.FirstName + " " + element.User.LastName)</td>
+                            <td>@element.LoanStatus.ToString()</td>
+                            <td>@(Convert.ToDateTime(element.ReturnDate).ToString("MMM dd, yyyy"))</td>
+                            
+                            @if (HttpContext.User.IsInRole(RoleName.Administrator.ToString()) || HttpContext.User.IsInRole(RoleName.Employee.ToString()))
+                            {
+                                <td><a asp-page="EditStatus" asp-route-id="@element.Id" class="btn btn-primary"><i class="bi bi-pencil-square"></i></a></td>
+                            }
+                            
+                            
+                           
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <p>No previous records of test results.</p>
+            }
+        </div>
+
+        <a>Back to home</a>
+    </form>
